@@ -1,0 +1,11 @@
+buapit_user
+
+user_id
+user_name
+user_password
+user_fullname
+user_level
+user_last_update
+user_active
+
+------------------

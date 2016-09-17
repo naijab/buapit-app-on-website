@@ -17,19 +17,32 @@
    $row = $stmt->fetch(PDO::FETCH_ASSOC);
    $count = $stmt->rowCount();
 
-  // if ($row['user_active']=="0") {
-     if($row['user_password']==$password){
-      echo "ok"; // log in
-    /*  $stmt = $db_con->prepare("UPDATE buapit_user SET user_active = '1', user_last_update = NOW() WHERE user_name=:uname");
-      $stmt->execute(array(":uname"=>$user_name));*/
-      $_SESSION['user_session'] = $row['user_id'];
-     }
-     else{
-      echo "ชื่อหรือรหัสผ่านผิด"; // wrong details
-     }
-  // }
-//   else {
-//   }
+   if ($row['user_active']=="1") {
+         echo "ผู้ใช้นี้กำลังเข้าสู่ระบบ";
+  }
+   else {
+
+      if($row['user_password']==$password){
+       $stmt = $db_con->prepare("UPDATE buapit_user SET user_active = '1', user_last_update = NOW() WHERE user_name=:uname");
+       $stmt->execute(array(":uname"=>$user_name));
+
+       switch ($row['user_level']) {
+         case '300':
+           echo "300";
+           break;
+
+         case '700':
+           echo "700";
+           break;
+       }
+       $_SESSION['user_session'] = $row['user_id'];
+       $_SESSION['user_level'] = $row['user_level'];
+       session_write_close();
+      }
+      else{
+       echo "ชื่อหรือรหัสผ่านผิด";
+      }
+  }
 
   }
   catch(PDOException $e){
