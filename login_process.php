@@ -21,7 +21,6 @@
          echo "ผู้ใช้นี้กำลังเข้าสู่ระบบ";
   }
    else {
-
       if($row['user_password']==$password){
        $stmt = $db_con->prepare("UPDATE buapit_user SET user_active = '1', user_last_update = NOW() WHERE user_name=:uname");
        $stmt->execute(array(":uname"=>$user_name));

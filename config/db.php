@@ -13,5 +13,9 @@ catch(PDOException $e){
    echo $e->getMessage();
 }
 
+  //ออกจากระบบ user ที่ล็อกอินค้าง
+  $intRejectTime = 1; // Minute
+  $stmt = $db_con->prepare("UPDATE buapit_user SET user_active = '0', user_last_update = '0000-00-00 00:00:00' WHERE 1 AND DATE_ADD(LastUpdate, INTERVAL $intRejectTime MINUTE) <= NOW() ");
+
 
 ?>

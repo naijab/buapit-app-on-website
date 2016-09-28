@@ -42,13 +42,13 @@ $('document').ready(function()
 
       $("#btn-login").html('<img src="btn-ajax-loader.gif" /> &nbsp; กำลังเข้าสู่ระบบ ...');
       //setTimeout(' window.location.href = "../user/index.php"; ',4000);
-      setTimeout('window.location="user/index";', 4000);
+      setTimeout('window.location="user/index.php";', 4000);
      }
      else if(data=="700"){
 
       $("#btn-login").html('<img src="btn-ajax-loader.gif" /> &nbsp; กำลังเข้าสู่ระบบ ...');
       //setTimeout(' window.location.href = "../user/index.php"; ',4000);
-      setTimeout('window.location="admin/index";', 4000);
+      setTimeout('window.location="admin/index.php";', 4000);
      }
      else{
 

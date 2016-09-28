@@ -50,7 +50,7 @@ $('document').ready(function()
     $.ajax({
 
     type : 'POST',
-    url  : 'register.php',
+    url  : 'register_process.php',
     data : data,
     beforeSend: function()
     {
@@ -74,7 +74,7 @@ $('document').ready(function()
         {
 
          $("#btn-submit").html('<img src="btn-ajax-loader.gif" /> &nbsp; กำลังสมัครสมาชิก ...');
-         setTimeout('$(".form-signin").fadeOut(500, function(){ $(".signin-form").load("index"); }); ',5000);
+         setTimeout('$(".form-signin").fadeOut(500, function(){ $(".signin-form").load("index.php"); }); ',500);
 
         }
         else{

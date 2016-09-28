@@ -1,13 +1,12 @@
 <?php
 session_start();
 
-if(!isset($_SESSION['user_session']))
+if($_SESSION['user_level']!="700"){
+  header("Location: ../user/index.php");
+}
+else if(!isset($_SESSION['user_session']))
 {
-  if($_SESSION['user_level']!="700")
-  {
-   header("Location: ../index.php");
-  }
- header("Location: ../index.php");
+  header("Location: ../index.php");
 }
 
 include_once '../config/db.php';
@@ -26,7 +25,24 @@ include_once '../config/db.php';
 <title>หน้าสมาชิก</title>
 <script type="text/javascript" src="../js/jquery-1.11.3-jquery.min.js"></script>
 <script type="text/javascript" src="../js/validation.min.js"></script>
-<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<!-- Bootstrap Core Css -->
+<link href="../plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+<!-- Waves Effect Css -->
+<link href="../plugins/node-waves/waves.css" rel="stylesheet" />
+
+<!-- Animation Css -->
+<link href="../plugins/animate-css/animate.css" rel="stylesheet" />
+
+<!-- Preloader Css -->
+<link href="../plugins/material-design-preloader/md-preloader.css" rel="stylesheet" />
+
+<!-- Morris Chart Css-->
+<link href="../plugins/morrisjs/morris.css" rel="stylesheet" />
+
+<!-- Custom Css -->
+<link href="../css/style.css" rel="stylesheet">
+<link href="../css/themes/all-themes.css" rel="stylesheet" />
 </head>
 <body>
 <div class="container" style="max-width:400px;">
@@ -39,5 +55,35 @@ include_once '../config/db.php';
   <a href="../logout.php">ออกจากระบบ</a>
 
 </div>
+   <!-- Jquery Core Js -->
+   <script src="../plugins/jquery/jquery.min.js"></script>
+   <!-- Bootstrap Core Js -->
+   <script src="../plugins/bootstrap/js/bootstrap.js"></script>
+   <!-- Select Plugin Js -->
+   <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
+   <!-- Slimscroll Plugin Js -->
+   <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+   <!-- Waves Effect Plugin Js -->
+   <script src="../plugins/node-waves/waves.js"></script>
+   <!-- Jquery CountTo Plugin Js -->
+   <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
+   <!-- Morris Plugin Js -->
+   <script src="../plugins/raphael/raphael.min.js"></script>
+   <script src="../plugins/morrisjs/morris.js"></script>
+   <!-- ChartJs -->
+   <script src="../plugins/chartjs/Chart.bundle.js"></script>
+   <!-- Flot Charts Plugin Js -->
+   <script src="../plugins/flot-charts/jquery.flot.js"></script>
+   <script src="../plugins/flot-charts/jquery.flot.resize.js"></script>
+   <script src="../plugins/flot-charts/jquery.flot.pie.js"></script>
+   <script src="../plugins/flot-charts/jquery.flot.categories.js"></script>
+   <script src="../plugins/flot-charts/jquery.flot.time.js"></script>
+   <!-- Sparkline Chart Plugin Js -->
+   <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
+   <!-- Custom Js -->
+   <script src="../js/admin.js"></script>
+   <script src="../js/pages/index.js"></script>
+   <!-- Demo Js -->
+   <script src="../js/demo.js"></script>
 </body>
 </html>
