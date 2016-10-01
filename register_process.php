@@ -34,7 +34,8 @@ try
    //ส่งค่ากลับไป
     if($stmt->execute())
     {
-     echo "registered";
+     //echo "registered";
+     header("Location: index.php");
     }
     else
     {

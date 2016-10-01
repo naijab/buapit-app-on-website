@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="container" style="max-width:400px;">
-  <form class="form-signin" method="post" id="register-form" autocomplete="off">
+  <form class="form-signin" method="post" action="register_process.php" id="register-form" autocomplete="off">
 
           <h2 class="form-signin-heading">ฟอร์มสมัครสมาชิก</h2><hr />
 

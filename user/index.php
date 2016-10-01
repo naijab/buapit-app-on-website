@@ -154,6 +154,9 @@ include_once '../config/db.php';
                           </a>
                               <ul class="ml-menu">
                                       <li>
+                                          <a href="news_all.php">ทั้งหมด</a>
+                                      </li>
+                                      <li>
                                           <a href="news_student.php">นักเรียน</a>
                                       </li>
                                       <li>

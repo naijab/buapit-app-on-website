@@ -6,7 +6,7 @@ $db_dataname = "buapitapp";
 
 // เชื่อมต่อฐานข้อมูล
 try{
-   $db_con = new PDO("mysql:host={$db_hostname};dbname={$db_dataname}",$db_username,$db_password);
+   $db_con = new PDO("mysql:host={$db_hostname};dbname={$db_dataname}",$db_username,$db_password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
    $db_con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 }
 catch(PDOException $e){

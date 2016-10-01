@@ -42,7 +42,7 @@ $('document').ready(function()
        });
     /* validation */
 
-    /* form submit */
+    /* form submit 
     function submitForm()
     {
     var data = $("#register-form").serialize();
@@ -74,7 +74,9 @@ $('document').ready(function()
         {
 
          $("#btn-submit").html('<img src="btn-ajax-loader.gif" /> &nbsp; กำลังสมัครสมาชิก ...');
-         setTimeout('$(".form-signin").fadeOut(500, function(){ $(".signin-form").load("index.php"); }); ',500);
+        // setTimeout('$(".form-signin").fadeOut(500, function(){ $(".signin-form").load("index.php"); }); ',500);
+
+        setTimeout('window.location="index.php";', 2000);
 
         }
         else{
@@ -92,6 +94,6 @@ $('document').ready(function()
     });
     return false;
   }
-    /* form submit */
+     form submit */
 
 });
