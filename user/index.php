@@ -6,16 +6,23 @@ if(!isset($_SESSION['user_session']))
  header("Location: ../index.php");
 }
 
-include_once '../config/db.php';
+require_once '../config/db.php';
+
 
   //อัพเดตเวลาล็อกอิน
   $stmt = $db_con->prepare("UPDATE buapit_user SET user_last_update = NOW() WHERE user_id=:uname");
   $stmt->execute(array(":uname"=>$_SESSION['user_session']));
 
-  //ดึงข้อมูลจากตาราง
+  //ดึงข้อมูลจากตารางผู้ใช้
   $stmt = $db_con->prepare("SELECT * FROM buapit_user WHERE user_id=:uid");
   $stmt->execute(array(":uid"=>$_SESSION['user_session']));
   $row=$stmt->fetch(PDO::FETCH_ASSOC);
+
+  $stmt_news = $db_con->prepare("SELECT * FROM buapit_news WHERE news_by_user=:uid");
+  $stmt_news->execute(array(":uid"=>$row['user_id']));
+  $row_news=$stmt_news->fetch(PDO::FETCH_ASSOC);
+  $row_cout_news = $stmt_news->rowCount();
+
 ?>
 
 <html>
@@ -23,35 +30,10 @@ include_once '../config/db.php';
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-<title>หน้าสมาชิก</title>
-<script type="text/javascript" src="../js/jquery-1.11.3-jquery.min.js"></script>
-<script type="text/javascript" src="../js/validation.min.js"></script>
-
-   <!-- Bootstrap Core Css -->
-   <link href="../plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
-
-   <!-- Waves Effect Css -->
-   <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
-
-   <!-- Animation Css -->
-   <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
-
-   <!-- Preloader Css -->
-   <link href="../plugins/material-design-preloader/md-preloader.css" rel="stylesheet" />
-
-   <!-- Morris Chart Css-->
-   <link href="../plugins/morrisjs/morris.css" rel="stylesheet" />
-
-   <!-- Custom Css -->
-   <link href="../css/style.css" rel="stylesheet">
-   <link href="../css/themes/all-themes.css" rel="stylesheet" />
-
-   <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-
+<?php require_once '../config/web_config.php';?>
+<title><?= $web_title; ?> หน้าสมาชิก</title>
 </head>
-<body class="theme-pink">
+<body class="<?= $web_theme; ?>" style="<?= $web_font; ?>">
 
   <!-- Page Loader -->
       <div class="page-loader-wrapper">
@@ -85,7 +67,7 @@ include_once '../config/db.php';
               <div class="navbar-header">
                   <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                   <a href="javascript:void(0);" class="bars"></a>
-                  <a class="navbar-brand" href="index.html">ระบบจัดการแอพพลิเคชั่น Buapit</a>
+                  <a class="navbar-brand" href="index.html"><b>ระบบจัดการแอพพลิเคชั่น Buapit</b></a>
               </div>
               <div class="collapse navbar-collapse" id="navbar-collapse">
                   <ul class="nav navbar-nav navbar-right">
@@ -131,73 +113,23 @@ include_once '../config/db.php';
                           </a>
                       </li>
                       <li>
-                          <a href="javascript:void(0);" class="menu-toggle">
+                          <a href="school_data.php">
                               <i class="material-icons">recent_actors</i>
                               <span>จัดการข้อมูลโรงเรียน</span>
                           </a>
-                          <ul class="ml-menu">
-                                      <li>
-                                          <a href="school_data.php">ข้อมูลโรงเรียน</a>
-                                      </li>
-                                      <li>
-                                          <a href="school_person.php">ข้อมูลบุคลากร</a>
-                                      </li>
-                                      <li>
-                                          <a href="school_student.php">ข้อมูลนักเรียน</a>
-                                      </li>
-                            </ul>
                       </li>
                       <li>
-                          <a href="javascript:void(0);" class="menu-toggle">
+                          <a href="news_all.php">
                               <i class="material-icons">chat</i>
                               <span>จัดการข่าวสารประชาสัมพันธ์</span>
                           </a>
-                              <ul class="ml-menu">
-                                      <li>
-                                          <a href="news_all.php">ทั้งหมด</a>
-                                      </li>
-                                      <li>
-                                          <a href="news_student.php">นักเรียน</a>
-                                      </li>
-                                      <li>
-                                          <a href="news_teacher.php">คุณครู</a>
-                                      </li>
-                                      <li>
-                                          <a href="news_finance.php">ธุรการ / พัสดุ / การเงิน</a>
-                                      </li>
-                               </ul>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0);" class="menu-toggle">
-                                  <i class="material-icons">assistant</i>
-                                  <span>จัดการรางวัล</span>
-                              </a>
-                              <ul class="ml-menu">
-                                          <li>
-                                              <a href="portfolio_edu.php">วิชาการ</a>
-                                          </li>
-                                          <li>
-                                              <a href="portfolio_sport.php">กีฬา</a>
-                                          </li>
-                                          <li>
-                                              <a href="portfolio_good.php">คุณธรรม</a>
-                                          </li>
-                                </ul>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0);" class="menu-toggle">
-                                  <i class="material-icons">today</i>
-                                  <span>จัดการปฏิทินกิจกรรม</span>
-                              </a>
-                              <ul class="ml-menu">
-                                          <li>
-                                              <a href="calendar_1.php">เทอมเรียน 1</a>
-                                          </li>
-                                          <li>
-                                              <a href="calendar_2.php">เทอมเรียน 2</a>
-                                          </li>
-                                </ul>
-                          </li>
+                      </li>
+                      <li>
+                          <a href="calendar.php">
+                              <i class="material-icons">today</i>
+                              <span>จัดการปฏิทินกิจกรรม</span>
+                          </a>
+                      </li>
                   </ul>
               </div>
               <!-- #Menu -->
@@ -218,7 +150,7 @@ include_once '../config/db.php';
       <section class="content">
           <div class="container-fluid">
               <div class="block-header">
-                  <h2>DASHBOARD</h2>
+                  <h1>จัดการระบบ แอพพลิเคชันโรงเรียน (SADA.OS)</h1>
               </div>
 
               <!-- Widgets -->
@@ -226,11 +158,11 @@ include_once '../config/db.php';
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                       <div class="info-box bg-pink hover-expand-effect">
                           <div class="icon">
-                              <i class="material-icons">playlist_add_check</i>
+                              <i class="material-icons">chat</i>
                           </div>
                           <div class="content">
-                              <div class="text">NEW TASKS</div>
-                              <div class="number count-to" data-from="0" data-to="125" data-speed="15" data-fresh-interval="20"></div>
+                              <div class="text" style="font-size:16px;">ข่าวประชาสัมพันธ์</div>
+                              <div class="number count-to" data-from="0" data-to="" data-speed="15" data-fresh-interval="20"><?php echo $row_cout_news; ?></div>
                           </div>
                       </div>
                   </div>
@@ -240,8 +172,8 @@ include_once '../config/db.php';
                               <i class="material-icons">help</i>
                           </div>
                           <div class="content">
-                              <div class="text">NEW TICKETS</div>
-                              <div class="number count-to" data-from="0" data-to="257" data-speed="1000" data-fresh-interval="20"></div>
+                             <div class="text" style="font-size:16px;">ใบขออนุญาติ</div>
+                             <div class="number count-to" data-from="0" data-to="" data-speed="15" data-fresh-interval="20"><?php echo $row_cout_news; ?></div>
                           </div>
                       </div>
                   </div>
@@ -251,8 +183,8 @@ include_once '../config/db.php';
                               <i class="material-icons">forum</i>
                           </div>
                           <div class="content">
-                              <div class="text">NEW COMMENTS</div>
-                              <div class="number count-to" data-from="0" data-to="243" data-speed="1000" data-fresh-interval="20"></div>
+                             <div class="text" style="font-size:16px;">ไฟล์ดาวน์โหลด</div>
+                             <div class="number count-to" data-from="0" data-to="" data-speed="15" data-fresh-interval="20"><?php echo $row_cout_news; ?></div>
                           </div>
                       </div>
                   </div>
@@ -262,8 +194,8 @@ include_once '../config/db.php';
                               <i class="material-icons">person_add</i>
                           </div>
                           <div class="content">
-                              <div class="text">NEW VISITORS</div>
-                              <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20"></div>
+                             <div class="text" style="font-size:16px;">ข้อความแจ้งเตือน</div>
+                             <div class="number count-to" data-from="0" data-to="" data-speed="15" data-fresh-interval="20"><?php echo $row_cout_news; ?></div>
                           </div>
                       </div>
                   </div>
@@ -491,36 +423,7 @@ include_once '../config/db.php';
           </div>
       </section>
 
-      <!-- Jquery Core Js -->
-      <script src="../plugins/jquery/jquery.min.js"></script>
-      <!-- Bootstrap Core Js -->
-      <script src="../plugins/bootstrap/js/bootstrap.js"></script>
-      <!-- Select Plugin Js -->
-      <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
-      <!-- Slimscroll Plugin Js -->
-      <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
-      <!-- Waves Effect Plugin Js -->
-      <script src="../plugins/node-waves/waves.js"></script>
-      <!-- Jquery CountTo Plugin Js -->
-      <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
-      <!-- Morris Plugin Js -->
-      <script src="../plugins/raphael/raphael.min.js"></script>
-      <script src="../plugins/morrisjs/morris.js"></script>
-      <!-- ChartJs -->
-      <script src="../plugins/chartjs/Chart.bundle.js"></script>
-      <!-- Flot Charts Plugin Js -->
-      <script src="../plugins/flot-charts/jquery.flot.js"></script>
-      <script src="../plugins/flot-charts/jquery.flot.resize.js"></script>
-      <script src="../plugins/flot-charts/jquery.flot.pie.js"></script>
-      <script src="../plugins/flot-charts/jquery.flot.categories.js"></script>
-      <script src="../plugins/flot-charts/jquery.flot.time.js"></script>
-      <!-- Sparkline Chart Plugin Js -->
-      <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
-      <!-- Custom Js -->
-      <script src="../js/admin.js"></script>
-      <script src="../js/pages/index.js"></script>
-      <!-- Demo Js -->
-      <script src="../js/demo.js"></script>
+
 
 </body>
 </html>

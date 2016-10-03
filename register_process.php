@@ -1,6 +1,6 @@
 <?php
 
-include 'config/db.php';
+require_once 'config/db.php';
 
 if($_POST)
  {
@@ -34,8 +34,8 @@ try
    //ส่งค่ากลับไป
     if($stmt->execute())
     {
-     //echo "registered";
-     header("Location: index.php");
+     echo "registered";
+     //header("Location: index.php");
     }
     else
     {

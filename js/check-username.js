@@ -4,7 +4,7 @@ $(document).ready(function()
  {
   var name = $(this).val();
 
-  if(name.length > 3)
+  if(name.length > 2)
   {
    $("#result").html('กำลังเช็คชื่อผู้ใช้...');
 

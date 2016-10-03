@@ -1,10 +1,11 @@
 <?php
 
-include 'config/db.php';
+require_once 'config/db.php';
 
 if($_POST)
   {
-      $name = strip_tags($_POST['username']);
+
+   $name = strip_tags($_POST['username']);
 
    $stmt=$db_con->prepare("SELECT user_name FROM buapit_user WHERE user_name=:name");
    $stmt->execute(array(':name'=>$name));

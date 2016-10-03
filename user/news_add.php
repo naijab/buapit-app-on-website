@@ -6,7 +6,7 @@ if(!isset($_SESSION['user_session']))
  header("Location: ../index.php");
 }
 
-include_once '../config/db.php';
+require_once '../config/db.php';
 
   $stmt = $db_con->prepare("UPDATE buapit_user SET user_last_update = NOW() WHERE user_id=:uname");
   $stmt->execute(array(":uname"=>$_SESSION['user_session']));
@@ -239,7 +239,7 @@ include_once '../config/db.php';
               <div class="form-group form-float">
                 <div class="form-line">
                   <input id="input-id" type="file" class="form-control" data-preview-file-type="text" >
-                
+
                 </div>
               </div>
 

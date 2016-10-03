@@ -3,15 +3,15 @@ $db_hostname = "localhost";
 $db_username = "root";
 $db_password = "";
 $db_dataname = "buapitapp";
-
-// เชื่อมต่อฐานข้อมูล
-try{
-   $db_con = new PDO("mysql:host={$db_hostname};dbname={$db_dataname}",$db_username,$db_password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-   $db_con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}
-catch(PDOException $e){
-   echo $e->getMessage();
-}
+$web_url_image_news = "http://localhost/buapit/images/news/";
+  // เชื่อมต่อฐานข้อมูล
+  try{
+     $db_con = new PDO("mysql:host={$db_hostname};dbname={$db_dataname}",$db_username,$db_password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+     $db_con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  }
+  catch(PDOException $e){
+     echo $e->getMessage();
+  }
 
   //ออกจากระบบ user ที่ล็อกอินค้าง
   $intRejectTime = 1; // Minute

@@ -42,7 +42,7 @@ $('document').ready(function()
        });
     /* validation */
 
-    /* form submit 
+    /* form submit */
     function submitForm()
     {
     var data = $("#register-form").serialize();
@@ -64,7 +64,6 @@ $('document').ready(function()
          $("#error").fadeIn(1000, function(){
 
            $("#error").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; ชื่อผู้ใช้มีอยู่แล้ว</div>');
-
            $("#btn-submit").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; สมัครสมาชิก');
 
          });
@@ -75,7 +74,7 @@ $('document').ready(function()
 
          $("#btn-submit").html('<img src="btn-ajax-loader.gif" /> &nbsp; กำลังสมัครสมาชิก ...');
         // setTimeout('$(".form-signin").fadeOut(500, function(){ $(".signin-form").load("index.php"); }); ',500);
-
+        alert('สำเร็จ');
         setTimeout('window.location="index.php";', 2000);
 
         }
@@ -94,6 +93,5 @@ $('document').ready(function()
     });
     return false;
   }
-     form submit */
 
 });

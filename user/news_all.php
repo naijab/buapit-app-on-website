@@ -6,7 +6,7 @@ if(!isset($_SESSION['user_session']))
  header("Location: ../index.php");
 }
 
-include_once '../config/db.php';
+require_once '../config/db.php';
 
   $stmt = $db_con->prepare("UPDATE buapit_user SET user_last_update = NOW() WHERE user_id=:uname");
   $stmt->execute(array(":uname"=>$_SESSION['user_session']));
@@ -21,35 +21,10 @@ include_once '../config/db.php';
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-<title>หน้าสมาชิก : จัดการข่าวสารประชาสัมพันธ์ > นักเรียน</title>
-<script type="text/javascript" src="../js/jquery-1.11.3-jquery.min.js"></script>
-<script type="text/javascript" src="../js/validation.min.js"></script>
-
-   <!-- Bootstrap Core Css -->
-   <link href="../plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
-
-   <!-- Waves Effect Css -->
-   <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
-
-   <!-- Animation Css -->
-   <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
-
-   <!-- Preloader Css -->
-   <link href="../plugins/material-design-preloader/md-preloader.css" rel="stylesheet" />
-
-   <!-- Morris Chart Css-->
-   <link href="../plugins/morrisjs/morris.css" rel="stylesheet" />
-
-   <!-- Custom Css -->
-   <link href="../css/style.css" rel="stylesheet">
-   <link href="../css/themes/all-themes.css" rel="stylesheet" />
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/css/bootstrap-select.min.css">
-   <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-
+<?php require_once '../config/web_config.php';?>
+<title><?= $web_title; ?> หน้าสมาชิก</title>
 </head>
-<body class="theme-pink">
+<body class="<?= $web_theme; ?>" style="<?= $web_font; ?>">
 
   <!-- Page Loader -->
       <div class="page-loader-wrapper">
@@ -221,7 +196,7 @@ include_once '../config/db.php';
                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table_content">
                       <div class="card">
                           <div class="header bg-orange">
-                              <h2>จัดการข่าวสารประชาสัมพันธ์ > ทั้งหมด <?php echo date("Y-m-d H:i:s");?>
+                              <h2>จัดการข่าวสารประชาสัมพันธ์ > ทั้งหมด
                               </h2>
                               <ul class="header-dropdown m-r--5">
                                   <li class="dropdown">
@@ -237,7 +212,45 @@ include_once '../config/db.php';
                               </ul>
                           </div>
                           <div class="body">
+<div class="table-responsive">
+<table class="table table-hover dashboard-task-infos">
+<thead>
+<tr>
+ <th>#</th>
+ <th>เรื่อง</th>
+ <th>รูปภาพ</th>
+ <th>เผยแพร่</th>
+ <th>แก้ไข</th>
+</tr>
+</thead>
+<tbody>
+<?php
+      $stmt = $db_con->prepare("SELECT * FROM buapit_news ORDER BY news_id DESC");
+      $stmt->execute();
+      $row=$stmt->fetchAll(PDO::FETCH_ASSOC);
+      $num=1;
 
+      foreach ($row as $row) {
+        if($row['news_active']=="1"){$active = "<div class='col-green'>เผยแพร่</div>";}
+        else {$active = "<div class='col-red'>ไม่ได้เผยแพร่</div>";}
+      ?>
+          <tr>
+          <td><?php echo $num++; ?></td>
+          <td><?php echo $row['news_title']; ?></td>
+          <td align="center"><input type="hidden" value="<?php echo $row['news_img']; ?>" name="img-id" ><img width="50px" src="<?php echo $row['news_img']; ?>"></td>
+          <td>
+          <?php echo $active; ?></td>
+          <td>
+          <a id="edit-btn" class="btn btn-warning waves-effect waves-float" href="edit_news.php?eid=<?php echo $row['news_id']; ?>" >
+          แก้ไข</a>
+          <a id="<?php echo $row['news_id']; ?>" class="btn btn-danger waves-effect waves-float" href="javascript:delete_id(<?php echo $row['news_id']; ?>)">
+          ลบ
+                </a></td>
+          </tr>
+        <?php } ?>
+
+</tbody>
+</table>
 
                                   <br><br>
                                   <button class="btn btn-success waves-effect waves-float" data-toggle="modal" data-target="#add_new_record_modal">สร้างใหม่</button>
@@ -250,10 +263,10 @@ include_once '../config/db.php';
 
                   <!-- Bootstrap Modal - To Add New Record -->
                   <!-- Modal -->
-    <div class="modal fade" id="add_new_record_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
+                  <div class="modal fade" id="add_new_record_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-lg" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">สร้างข่าวใหม่</h4>
                   </div>
@@ -295,7 +308,7 @@ include_once '../config/db.php';
                       <div class="col-md-9">
                         <label class="form-label">รูปภาพ</label>
                         <div class="form-line">
-                          <input type="file" id='image' name='image' class='form-control' placeholder='' required />
+                          <input type="file" id='image' name='image' class='form-control' placeholder='' accept="image/jpeg,image/jpg,image/gif,image/png" required/>
                         </div>
                       </div>
                       <div class="col-md-3">
@@ -309,13 +322,14 @@ include_once '../config/db.php';
 
                   </div>
                   <div class="modal-footer">
-                  <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">ยกเลิก</button>
-                  <button type="submit" class="btn btn-primary btn-lg">บันทึก</button>
-                </form>
+                    <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">ยกเลิก</button>
+                    <button type="submit" onclick="return edit_user_form();" class="btn btn-primary btn-lg">บันทึก</button>
+                  </form>
                   </div>
-                  </div>
-                  </div>
-                  </div>
+                </div>
+                </div>
+              </div>
+              <!-- End Modal Add -->
 
               </div>
           </div>
@@ -344,20 +358,16 @@ include_once '../config/db.php';
       <!-- Custom Js -->
       <script src="../js/admin.js"></script>
       <script src="../js/pages/index.js"></script>
-      <!-- Crud JS -->
-      <script src="js/crud.js"></script>
-      <!-- Demo Js
-      <script src="../js/demo.js"></script>
-      <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
-         $('#example').DataTable();
 
-         $('#example')
-         .removeClass( 'display' )
-         .addClass('table table-bordered');
-        });
-     </script> -->
-
+      <script type="text/javascript">
+        function delete_id(id)
+            {
+                if(confirm('ต้องการลบใช่หรือไม่ ?'))
+                 {
+                 window.location.href='lib/delete_news.php?did='+id;
+                 }
+            }
+    </script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/js/bootstrap-select.min.js"></script>
 
 
