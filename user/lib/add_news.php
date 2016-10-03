@@ -2,10 +2,11 @@
     session_start();
     if(!isset($_SESSION['user_session']))
     {
-     header("Location: ../index.php");
+     header("Location: ../../index.php");
     }
 
     require_once '../../config/db.php';
+    require_once '../../config/web_config.php';
 
     $stmt = $db_con->prepare("UPDATE buapit_user SET user_last_update = NOW() WHERE user_id=:uname");
     $stmt->execute(array(":uname"=>$_SESSION['user_session']));
@@ -18,11 +19,11 @@
     {
 
         // รับค่าจากฟอร์ม
-        $title = $_POST['title'];
+        $title = trim($_POST['title']);
         $image = $_FILES['image'];
-        $content = $_POST['content'];
-        $type  = $_POST['type'];
-        $active  = $_POST['active'];
+        $content = trim($_POST['content']);
+        $type  = trim($_POST['type']);
+        $active  = trim($_POST['active']);
         //$create  = date("Y-m-d H:i:s");
         //$modified  = date("Y-m-d H:i:s");
         $by  = $row['user_school_id'];
@@ -53,7 +54,7 @@
              //ส่งค่ากลับไป
               if($stmt->execute())
               {
-               header("Location: ../news_all.php");
+               header("Location: ../news");
               }
               else
               {

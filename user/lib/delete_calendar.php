@@ -15,19 +15,17 @@
     $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
         $id = $_GET['did'];
-        $root = getcwd().DIRECTORY_SEPARATOR;
-        $path = "../../images/news/";
 
           try
             {
 
             if(isset($_GET['did'])) {
 
-                $stmt = $db_con->prepare("DELETE FROM buapit_news WHERE news_id = '$id' ");
+                $stmt = $db_con->prepare("DELETE FROM buapit_calendar WHERE calendar_id = '$id' ");
 
                   if($stmt->execute())
                   {
-                   header("Location: ../news");
+                   header("Location: ../calendar");
                   }else {echo " เกิดข้อผิดพลาด !";}
             }
 

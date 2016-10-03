@@ -8,7 +8,6 @@ if(!isset($_SESSION['user_session']))
 
 require_once '../config/db.php';
 
-
   //อัพเดตเวลาล็อกอิน
   $stmt = $db_con->prepare("UPDATE buapit_user SET user_last_update = NOW() WHERE user_id=:uname");
   $stmt->execute(array(":uname"=>$_SESSION['user_session']));
@@ -20,7 +19,7 @@ require_once '../config/db.php';
 
   $stmt_news = $db_con->prepare("SELECT * FROM buapit_news WHERE news_by_user=:uid");
   $stmt_news->execute(array(":uid"=>$row['user_id']));
-  $row_news=$stmt_news->fetch(PDO::FETCH_ASSOC);
+  $row_news = $stmt_news->fetch(PDO::FETCH_ASSOC);
   $row_cout_news = $stmt_news->rowCount();
 
 ?>
@@ -31,7 +30,7 @@ require_once '../config/db.php';
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <?php require_once '../config/web_config.php';?>
-<title><?= $web_title; ?> หน้าสมาชิก</title>
+<title><?= $web_title; ?> : หน้าแรก</title>
 </head>
 <body class="<?= $web_theme; ?>" style="<?= $web_font; ?>">
 
@@ -67,15 +66,15 @@ require_once '../config/db.php';
               <div class="navbar-header">
                   <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                   <a href="javascript:void(0);" class="bars"></a>
-                  <a class="navbar-brand" href="index.html"><b>ระบบจัดการแอพพลิเคชั่น Buapit</b></a>
+                  <a class="navbar-brand" href="index"><b><?= $web_title ?></b></a>
               </div>
               <div class="collapse navbar-collapse" id="navbar-collapse">
                   <ul class="nav navbar-nav navbar-right">
-                      <!-- Call Search -->
-                      <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>
-                      <!-- #END# Call Search -->
-                      <li><a href="../logout.php">ออกจากระบบ</a></li>
-
+                    <!-- Call Search
+                    <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>-->
+                    <!-- #END# Call Search -->
+                    <li><a href="index">สวัสดี <?= $row['user_name']?></a></li>
+                    <li><a href="../logout">ออกจากระบบ</a></li>
                   </ul>
               </div>
           </div>
@@ -85,20 +84,14 @@ require_once '../config/db.php';
           <!-- Left Sidebar -->
           <aside id="leftsidebar" class="sidebar">
               <!-- User Info -->
-              <div class="user-info">
+              <div class="user-info" style="max-height:100px;">
                   <div class="image">
 
                   </div>
                   <div class="info-container">
-                      <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $row['user_name']; ?></div>
-                      <div class="btn-group user-helper-dropdown">
-                          <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
-                          <ul class="dropdown-menu pull-right">
-                              <li><a href="javascript:void(0);"><i class="material-icons">person</i>แก้ไขข้อมูลส่วนตัว</a></li>
-                              <li role="seperator" class="divider"></li>
-                              <li><a href="../logout.php"><i class="material-icons">input</i>ออกจากระบบ</a></li>
-                          </ul>
-                      </div>
+                      <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?= $row['user_name']; ?><br>
+                      <?= $row['user_email']?></div>
                   </div>
               </div>
               <!-- #User Info -->
@@ -107,27 +100,53 @@ require_once '../config/db.php';
                   <ul class="list">
                       <li class="header">เมนูหลัก</li>
                       <li class="active">
-                          <a href="index.php">
+                          <a href="index">
                               <i class="material-icons">home</i>
                               <span>หน้าแรก</span>
                           </a>
                       </li>
                       <li>
-                          <a href="school_data.php">
-                              <i class="material-icons">recent_actors</i>
-                              <span>จัดการข้อมูลโรงเรียน</span>
+                         <a href="javascript:void(0);" class="menu-toggle">
+                             <i class="material-icons">recent_actors</i>
+                             <span>จัดการข้อมูลโรงเรียน</span>
+                         </a>
+                         <ul class="ml-menu">
+                             <li>
+                                 <a href="school">จัดการข้อมูลโรงเรียน</a>
+                             </li>
+                             <li>
+                                 <a href="person">จัดการบุคลากร</a>
+                             </li>
+                         </ul>
+                     </li>
+                      <li>
+                          <a href="notification">
+                              <i class="material-icons">speaker_phone</i>
+                              <span>จัดการข้อความแจ้งเตือน</span>
                           </a>
                       </li>
                       <li>
-                          <a href="news_all.php">
+                          <a href="news">
                               <i class="material-icons">chat</i>
                               <span>จัดการข่าวสารประชาสัมพันธ์</span>
                           </a>
                       </li>
                       <li>
-                          <a href="calendar.php">
+                          <a href="permit">
+                              <i class="material-icons">transfer_within_a_station</i>
+                              <span>จัดการใบอนุญาตออกนอกโรงเรียน</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="calendar">
                               <i class="material-icons">today</i>
                               <span>จัดการปฏิทินกิจกรรม</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="download">
+                              <i class="material-icons">get_app</i>
+                              <span>จัดการไฟล์ดาวน์โหลด</span>
                           </a>
                       </li>
                   </ul>
@@ -162,7 +181,7 @@ require_once '../config/db.php';
                           </div>
                           <div class="content">
                               <div class="text" style="font-size:16px;">ข่าวประชาสัมพันธ์</div>
-                              <div class="number count-to" data-from="0" data-to="" data-speed="15" data-fresh-interval="20"><?php echo $row_cout_news; ?></div>
+                              <div class="number count-to" data-from="0" data-to="<?= $row_cout_news; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
                   </div>
@@ -173,7 +192,7 @@ require_once '../config/db.php';
                           </div>
                           <div class="content">
                              <div class="text" style="font-size:16px;">ใบขออนุญาติ</div>
-                             <div class="number count-to" data-from="0" data-to="" data-speed="15" data-fresh-interval="20"><?php echo $row_cout_news; ?></div>
+                             <div class="number count-to" data-from="0" data-to="<?= $row_cout_news; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
                   </div>
@@ -184,7 +203,7 @@ require_once '../config/db.php';
                           </div>
                           <div class="content">
                              <div class="text" style="font-size:16px;">ไฟล์ดาวน์โหลด</div>
-                             <div class="number count-to" data-from="0" data-to="" data-speed="15" data-fresh-interval="20"><?php echo $row_cout_news; ?></div>
+                             <div class="number count-to" data-from="0" data-to="<?= $row_cout_news; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
                   </div>
@@ -195,108 +214,15 @@ require_once '../config/db.php';
                           </div>
                           <div class="content">
                              <div class="text" style="font-size:16px;">ข้อความแจ้งเตือน</div>
-                             <div class="number count-to" data-from="0" data-to="" data-speed="15" data-fresh-interval="20"><?php echo $row_cout_news; ?></div>
+                             <div class="number count-to" data-from="0" data-to="<?= $row_cout_news; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
                   </div>
+
               </div>
               <!-- #END# Widgets -->
               <div class="row clearfix">
-                  <!-- Visitors -->
-                  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                      <div class="card">
-                          <div class="body bg-pink">
-                              <div class="sparkline" data-type="line" data-spot-Radius="4" data-highlight-Spot-Color="rgb(233, 30, 99)" data-highlight-Line-Color="#fff"
-                                   data-min-Spot-Color="rgb(255,255,255)" data-max-Spot-Color="rgb(255,255,255)" data-spot-Color="rgb(255,255,255)"
-                                   data-offset="90" data-width="100%" data-height="92px" data-line-Width="2" data-line-Color="rgba(255,255,255,0.7)"
-                                   data-fill-Color="rgba(0, 188, 212, 0)">
-                                  12,10,9,6,5,6,10,5,7,5,12,13,7,12,11
-                              </div>
-                              <ul class="dashboard-stat-list">
-                                  <li>
-                                      TODAY
-                                      <span class="pull-right"><b>1 200</b> <small>USERS</small></span>
-                                  </li>
-                                  <li>
-                                      YESTERDAY
-                                      <span class="pull-right"><b>3 872</b> <small>USERS</small></span>
-                                  </li>
-                                  <li>
-                                      LAST WEEK
-                                      <span class="pull-right"><b>26 582</b> <small>USERS</small></span>
-                                  </li>
-                              </ul>
-                          </div>
-                      </div>
-                  </div>
-                  <!-- #END# Visitors -->
-                  <!-- Latest Social Trends -->
-                  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                      <div class="card">
-                          <div class="body bg-cyan">
-                              <div class="m-b--35 font-bold">LATEST SOCIAL TRENDS</div>
-                              <ul class="dashboard-stat-list">
-                                  <li>
-                                      #socialtrends
-                                      <span class="pull-right">
-                                          <i class="material-icons">trending_up</i>
-                                      </span>
-                                  </li>
-                                  <li>
-                                      #materialdesign
-                                      <span class="pull-right">
-                                          <i class="material-icons">trending_up</i>
-                                      </span>
-                                  </li>
-                                  <li>#adminbsb</li>
-                                  <li>#freeadmintemplate</li>
-                                  <li>#bootstraptemplate</li>
-                                  <li>
-                                      #freehtmltemplate
-                                      <span class="pull-right">
-                                          <i class="material-icons">trending_up</i>
-                                      </span>
-                                  </li>
-                              </ul>
-                          </div>
-                      </div>
-                  </div>
-                  <!-- #END# Latest Social Trends -->
-                  <!-- Answered Tickets -->
-                  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                      <div class="card">
-                          <div class="body bg-teal">
-                              <div class="font-bold m-b--35">ANSWERED TICKETS</div>
-                              <ul class="dashboard-stat-list">
-                                  <li>
-                                      TODAY
-                                      <span class="pull-right"><b>12</b> <small>TICKETS</small></span>
-                                  </li>
-                                  <li>
-                                      YESTERDAY
-                                      <span class="pull-right"><b>15</b> <small>TICKETS</small></span>
-                                  </li>
-                                  <li>
-                                      LAST WEEK
-                                      <span class="pull-right"><b>90</b> <small>TICKETS</small></span>
-                                  </li>
-                                  <li>
-                                      LAST MONTH
-                                      <span class="pull-right"><b>342</b> <small>TICKETS</small></span>
-                                  </li>
-                                  <li>
-                                      LAST YEAR
-                                      <span class="pull-right"><b>4 225</b> <small>TICKETS</small></span>
-                                  </li>
-                                  <li>
-                                      ALL
-                                      <span class="pull-right"><b>8 752</b> <small>TICKETS</small></span>
-                                  </li>
-                              </ul>
-                          </div>
-                      </div>
-                  </div>
-                  <!-- #END# Answered Tickets -->
+
               </div>
 
               <div class="row clearfix">
@@ -399,7 +325,7 @@ require_once '../config/db.php';
                   <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                       <div class="card">
                           <div class="header">
-                              <h2>BROWSER USAGE</h2>
+                              <h2>ข้อมูลส่วนตัว</h2>
                               <ul class="header-dropdown m-r--5">
                                   <li class="dropdown">
                                       <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -413,8 +339,119 @@ require_once '../config/db.php';
                                   </li>
                               </ul>
                           </div>
-                          <div class="body">
-                              <div id="donut_chart" class="dashboard-donut-chart"></div>
+                          <div class="body" >
+
+                            <div class="row" style="padding:10px;">
+                              <div class="form-group"><h4>
+                                  <p id="pr-user" class="form-control-static">ชื่อผู้ใช้งาน:
+                                    <b class="<?= $web_color?>"> <?= $row['user_name']?></b></p>
+                                  <p id="pr-user" class="form-control-static"><b>ระดับ: </b>
+                                    <b class="<?= $web_color?>"><?php
+                                  if ($row['user_level']==300) {
+                                    echo "ผู้ดูแลระบบ (Admin)";
+                                  }
+                                  if ($row['user_level']==700) {
+                                    echo "ผู้จัดการระบบ (Super Admin)";
+                                  }
+                                  ?></b></p> </h4>
+                              </div>
+                              <button class="pull-right btn btn-success waves-effect waves-float" data-toggle="modal" data-target="#edit-profile">แก้ไขข้อมูลส่วนตัว</button>
+                            </div>
+
+
+                            <!-- Bootstrap Modal - To Add New Record -->
+                            <!-- Modal -->
+                            <div class="modal fade" id="edit-profile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                              <div class="modal-dialog modal-md" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel">แก้ไขข้อมูลส่วนตัว</h4>
+                            </div>
+                            <div class="modal-body">
+                              <form id="edit_form" action="lib/edit_profile?id=<?php echo $row['user_id'] ?>" method="post">
+                                  <div class="row" style="padding:10px;">
+                                    <div class="col-md-6">
+                                      <div class="form-group">
+                                          <label class="form-label">โรงเรียน</label>
+                                          <div class="form-line">
+                                              <input type="text" name="school" id="school" class="form-control" placeholder="" value="<?php echo $row['user_school_name'];?>" required /> </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <label class="form-label">รหัสโรงเรียน</label>
+                                          <div class="form-line">
+                                              <input type="text" name="school-id" id="school-id" class="form-control" placeholder="" value="<?php echo $row['user_school_id'];?>" required /> </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <label class="form-label">ชื่อผู้ใช้งาน username</label>
+                                          <div class="form-line">
+                                              <input type="text" name="username" id="username" class="form-control" placeholder="" value="<?php echo $row['user_name'];?>" required /> </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <label class="form-label">รหัสผ่าน password ใหม่</label>
+                                          <div class="form-line">
+                                              <input type="password" name="newpass" id="newpass" class="form-control" placeholder="" value="" /> </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <label class="form-label">วันที่สมัครสมาชิก</label>
+                                          <div class="form-line">
+                                            <p class="form-control-static">
+                                              <?php echo $row['user_create'];?>
+                                            </p>
+                                          </div>
+                                      </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">ชื่อ - สกุล</label>
+                                        <div class="form-line">
+                                            <input type="text" name="fullname" id="fullname" class="form-control" placeholder="" value="<?php echo $row['user_fullname'];?>" required /> </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">ตำแหน่ง</label>
+                                        <div class="form-line">
+                                            <input type="text" name="position" id="position" class="form-control" placeholder="" value="<?php echo $row['user_position'];?>" required /> </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">อีเมลล์</label>
+                                        <div class="form-line">
+                                            <input type="email" name="email" id="email" class="form-control" placeholder="" value="<?php echo $row['user_email'];?>" required /> </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">เบอร์โทรศัพท์</label>
+                                        <div class="form-line">
+                                            <input type="text" name="tel" id="tel" class="form-control" placeholder="" value="<?php echo $row['user_tel'];?>" required /> </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">ระดับผู้ใช้งาน</label>
+                                        <div class="form-line">
+                                          <p class="form-control-static">
+                                            <?php
+                                              if ($row['user_level']==300) {
+                                                echo "ผู้ดูแลระบบ (Admin)";
+                                              }
+                                              if ($row['user_level']==700) {
+                                                echo "ผู้จัดการระบบ (Super Admin)";
+                                              }
+                                            ?>
+                                          </p>
+                                        </div>
+                                    </div>
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">ยกเลิก</button>
+                              <button type="submit" onclick="return edit_user_form();" class="btn btn-primary btn-lg">บันทึก</button>
+                            </form>
+                            </div>
+                          </div>
+                          </div>
+                        </div>
+                        <!-- End Modal Add -->
+
+
+                              </div>
                           </div>
                       </div>
                   </div>

@@ -1,10 +1,17 @@
+http://localhost/buapit/user/json/json_school?id=1039760327&key=avgfefAgfsdRdCidlVREWSfelfLKAqwporzcgo
+
+http://localhost/buapit/user/json/json_news?id=1039760327&key=avgfefAgfsdRdCidlVREWSfelfLKAqwporzcgo
+
+
 buapit_user
 ------
 user_id
 user_school_id
+user_school_name
 user_name
 user_password
 user_fullname
+user_position
 user_email
 user_tel
 user_create
@@ -25,6 +32,7 @@ news_active
 news_create
 news_modified
 news_by
+news_by_user
 ------------------
 
 buapit_download

@@ -6,6 +6,7 @@
     }
 
     require_once '../../config/db.php';
+    require_once '../../config/web_config.php';
 
     $stmt = $db_con->prepare("UPDATE buapit_user SET user_last_update = NOW() WHERE user_id=:uname");
     $stmt->execute(array(":uname"=>$_SESSION['user_session']));
@@ -14,14 +15,14 @@
     $stmt->execute(array(":uid"=>$_SESSION['user_session']));
     $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
-        $id = $_POST['id-news'];
+        $id = trim($_POST['id-news']);
         // รับค่าจากฟอร์ม
-        $title = $_POST['title'];
-        $image = $_FILES['image'];
-        $oldimage = $_POST['id-img'];
-        $content = $_POST['content'];
-        $type  = $_POST['type'];
-        $active  = $_POST['active'];
+        $title = trim($_POST['title']);
+        $image = trim($_FILES['image']);
+        $oldimage = trim($_POST['id-img']);
+        $content = trim($_POST['content']);
+        $type  = trim($_POST['type']);
+        $active  = trim($_POST['active']);
         //$create  = date("Y-m-d H:i:s");
         //$modified  = date("Y-m-d H:i:s");
         $by  = $row['user_school_id'];
@@ -31,7 +32,7 @@
         $temp = explode(".", $_FILES["image"]["name"]);
         $english = "abcdefghijklmnopqrstuwvxyz";
         $newfilename = rand(1,999999)."-".rand(1,999999)."-".round(microtime(true)) . '.' . end($temp);
-        $pathsave = $path.$newfilename;
+        $pathsave = $web_url_image_news.$newfilename;
 
           try
             {
@@ -54,8 +55,8 @@
 
                    if($stmt->execute())
                    {
-                      echo "1 สำเร็จ !";
-                      header("Location: ../news_all.php");
+                    //  echo "1 สำเร็จ !";
+                      header("Location: ../news");
                    }
                    else
                    {
@@ -74,7 +75,7 @@
 
                  if($stmt->execute())
                  {
-                    header("Location: ../news_all.php");
+                    header("Location: ../news");
                  }
                  else
                  {

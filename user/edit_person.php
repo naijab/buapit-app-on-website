@@ -11,9 +11,9 @@ require_once '../config/db.php';
   $stmt = $db_con->prepare("UPDATE buapit_user SET user_last_update = NOW() WHERE user_id=:uname");
   $stmt->execute(array(":uname"=>$_SESSION['user_session']));
 
-  $stmt = $db_con->prepare("SELECT * FROM buapit_user WHERE user_id=:uid");
-  $stmt->execute(array(":uid"=>$_SESSION['user_session']));
-  $row=$stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt1 = $db_con->prepare("SELECT * FROM buapit_user WHERE user_id=:uid");
+  $stmt1->execute(array(":uid"=>$_SESSION['user_session']));
+  $row1=$stmt1->fetch(PDO::FETCH_ASSOC);
 ?>
     <html>
 
@@ -22,7 +22,7 @@ require_once '../config/db.php';
         <meta http-equiv="X-UA-Compatible" content="IE=Edge">
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <?php require_once '../config/web_config.php';?>
-        <title><?= $web_title; ?> : จัดการข่าวสารประชาสัมพันธ์ > แก้ไข</title>
+        <title><?= $web_title; ?> : จัดการบุคลากร > แก้ไข</title>
       </head>
 
     <body class="<?= $web_theme; ?>" style="<?= $web_font; ?>">
@@ -52,14 +52,13 @@ require_once '../config/db.php';
             <div class="container-fluid">
                 <div class="navbar-header">
                     <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
-                    <a class="navbar-brand" href="index"><b><?= $web_title ?></b></a>
-                    </div>
+                    <a href="javascript:void(0);" class="bars"></a> <a class="navbar-brand" href="index.html">ระบบจัดการแอพพลิเคชั่น Buapit</a> </div>
                 <div class="collapse navbar-collapse" id="navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                       <!-- Call Search
                       <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>-->
                       <!-- #END# Call Search -->
-                      <li><a href="index">สวัสดี <?= $row['user_name']?></a></li>
+                      <li><a href="index">สวัสดี <?= $row1['user_name']?></a></li>
                       <li><a href="../logout">ออกจากระบบ</a></li>
                     </ul>
                 </div>
@@ -75,9 +74,7 @@ require_once '../config/db.php';
 
                   </div>
                   <div class="info-container">
-                      <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <?= $row['user_name']; ?><br>
-                      <?= $row['user_email']?></div>
+                      <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $row['user_name']; ?></div>
 
                   </div>
               </div>
@@ -92,7 +89,7 @@ require_once '../config/db.php';
                               <span>หน้าแรก</span>
                           </a>
                       </li>
-                      <li>
+                      <li class="active">
                          <a href="javascript:void(0);" class="menu-toggle">
                              <i class="material-icons">recent_actors</i>
                              <span>จัดการข้อมูลโรงเรียน</span>
@@ -101,7 +98,7 @@ require_once '../config/db.php';
                              <li>
                                  <a href="school">จัดการข้อมูลโรงเรียน</a>
                              </li>
-                             <li>
+                             <li class="active">
                                  <a href="person">จัดการบุคลากร</a>
                              </li>
                          </ul>
@@ -112,7 +109,7 @@ require_once '../config/db.php';
                               <span>จัดการข้อความแจ้งเตือน</span>
                           </a>
                       </li>
-                      <li  class="active">
+                      <li>
                           <a href="news">
                               <i class="material-icons">chat</i>
                               <span>จัดการข่าวสารประชาสัมพันธ์</span>
@@ -157,7 +154,7 @@ require_once '../config/db.php';
             <div class="container-fluid">
                 <?php
                 $eid = $_GET['eid'];
-                $stmt = $db_con->prepare("SELECT * FROM buapit_news WHERE news_id=:eid");
+                $stmt = $db_con->prepare("SELECT * FROM buapit_person WHERE person_id=:eid && person_by = {$row1['user_id']}");
                 $stmt->execute(array(":eid"=>$eid));
                 $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -167,65 +164,48 @@ require_once '../config/db.php';
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table_content">
                             <div class="card">
                                 <div class="header bg-orange">
-                                    <h2>จัดการข่าวสารประชาสัมพันธ์ > แก้ไข
+                                    <h2>จัดการบุคลากร > แก้ไข
                               </h2>
 
                                 </div>
                                 <div class="body">
-                                    <!--Add form-->
-                                    <form id="edit_form" action="lib/edit_news_pro?id=<?php echo $eid ?>" enctype="multipart/form-data" method="post">
-                                        <div class="row">
-                                            <input type="hidden" value="<?php echo $row['news_id'];?>" name="id-news" />
-                                            <div class="col-md-9">
-                                                <div class="form-group">
-                                                    <label class="form-label">ชื่อเรื่อง</label>
-                                                    <div class="form-line">
-                                                        <input type='text' name='title' id='title' class='form-control' placeholder='ใส่ชื่อเรื่อง' value="<?php echo $row['news_title'];?>" required /> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-<label class="form-label">เลือกประเภท</label>
-<select class="form-control" name="type" id="type" required>
-
-<option value="ทั่วไป" <?php if($row['news_type']=="ทั่วไป"){echo 'selected="selected"';} ?>>ทั่วไป</option>
-<option value="นักเรียน" <?php if($row['news_type']=="นักเรียน"){echo 'selected="selected"';} ?>>นักเรียน</option>
-<option value="คุณครู" <?php if($row['news_type']=="คุณครู"){echo 'selected="selected"';} ?>>คุณครู</option>
-<option value="วิชาการ" <?php if($row['news_type']=="วิชาการ"){echo 'selected="selected"';} ?>>วิชาการ</option>
-<option value="รางวัลและการแข่งขัน" <?php if($row['news_type']=="รางวัลและการแข่งขัน"){echo 'selected="selected"';} ?>>รางวัลและการแข่งขัน</option>
-<option value="การเงิน / ธุรการ" <?php if($row['news_type']=="การเงิน / ธุรการ"){echo 'selected="selected"';} ?>>การเงิน / ธุรการ</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                  <form action="lib/edit_person_pro" method="post" >
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <div class="form-group">
+                                          <input type="hidden" value="<?= $row['person_id']?>" name="idper" >
+                                          <label class="form-label">ชื่อ - สกุล</label>
+                                          <div class="form-line">
+                                              <input type='text' name='name' id='name' class='form-control' placeholder='ใส่ชื่อ - สกุล' value="<?= $row['person_name']?>" required />
+                                          </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-label">เนื้อข่าว</label>
-                                            <div class="form-line">
-    <textarea type='text' id='content' name='content' class='form-control' placeholder='ใส่เนื้อเรื่อง' rows="10" cols="20" style="overflow-y: scroll; resize: none; text-align:left;" required><?php echo trim($row['news_content']);?></textarea>
-                                            </div>
+                                          <label class="form-label">ตำแหน่ง</label>
+                                          <div class="form-line">
+                                              <input type='text' value="<?= $row['person_position']?>" name='position' id='position' class='form-control' placeholder='ใส่ตำแหน่ง' required />
+                                          </div>
                                         </div>
-                                        <div class="row">
-                                            <input type="hidden" value="<?php echo $row['news_img'];?>" name="id-img" />
-                                            <div class="form-group">
-                                                <div class="col-md-9"> <img width="100px" src="<?php echo $row['news_img'];?>">
-                                                    <label class="form-label">รูปภาพ</label>
-                                                    <div class="form-line">
-                                                        <input type="file" id='image' name='image' class='form-control' placeholder='' /> </div>
-                                                </div>
-                                    <div class="col-md-3">
-    <input name="active" id="active1" type="radio" class="rad-active with-gap radio-col-green" <?php if ($row[ 'news_active']==1) {echo 'checked="checked"';} ?> value="1" >
-    <label for="active1">เผยแพร่</label>
-    <input name="active" id="active2" type="radio" class="rad-active with-gap radio-col-red" <?php if ($row[ 'news_active']==0) {echo 'checked="checked"';} ?> value="0" >
-    <label for="active2">ไม่เผยแพร่</label>
-                                                </div>
-                                            </div>
+                                        <div class="form-group">
+                                          <label class="form-label">เบอร์โทรศัพท์</label>
+                                          <div class="form-line">
+                                              <input type='text' value="<?= $row['person_tel']?>" name='tel' id='tel' class='form-control' placeholder='ใส่เบอร์โทรศัพท์' required />
+                                          </div>
                                         </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">ยกเลิก</button>
-                                    <button type="submit" class="btn btn-primary btn-lg">บันทึก</button>
+                                        <div class="form-group">
+                                          <label class="form-label">ฝ่าย</label>
+                                          <div class="form-line">
+                                              <input type='text' value="<?= $row['person_faction']?>" name='faction' id='faction' class='form-control' placeholder='ใส่ฝ่าย' required />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">ยกเลิก</button>
+                                      <button type="submit" onclick="return edit_user_form();" class="btn btn-primary btn-lg">บันทึก</button>
                                     </form>
-                                </div>
+                                    </div>
                             </div>
                         </div>
                     </div>

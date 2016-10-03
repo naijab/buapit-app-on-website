@@ -6,7 +6,10 @@
  {
   $user_name = trim($_POST['username']);
   $user_password = trim($_POST['password']);
-  $password = hash('sha256', $user_password);
+  $sl = "acGflxidpiblfirjosp";
+  $newpass1 = $user_password.$sl;
+  $password = hash('sha256', $newpass1);
+  //$password = hash('sha256', $user_password);
 
   try
   {

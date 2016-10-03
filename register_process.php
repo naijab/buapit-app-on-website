@@ -5,13 +5,16 @@ require_once 'config/db.php';
 if($_POST)
  {
    //กำหนดตัวแปรจากฟอร์มสมัครสมาชิก
-  $user_name = $_POST['username'];
-  $user_password = $_POST['password'];
-  $user_fullname = $_POST['fullname'];
+  $user_name = trim($_POST['username']);
+  $user_password = trim($_POST['password']);
+  $user_fullname = trim($_POST['fullname']);
   $user_level = "300";
   $user_last_update = "0000-00-00 00:00:00";
   $user_active = "0";
-  $user_hash_password = hash('sha256', $user_password);
+  $sl = "acGflxidpiblfirjosp";
+  $newpass1 = $user_password.$sl;
+  $user_hash_password = hash('sha256', $newpass1);
+  //$user_hash_password = hash('sha256', $user_password);
 
 try
   {

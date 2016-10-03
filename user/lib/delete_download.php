@@ -14,20 +14,24 @@
     $stmt->execute(array(":uid"=>$_SESSION['user_session']));
     $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
-        $id = $_GET['did'];
-        $root = getcwd().DIRECTORY_SEPARATOR;
-        $path = "../../images/news/";
+    $id = $_GET['did'];
+
+    $stmt1 = $db_con->prepare("SELECT * FROM buapit_download WHERE download_by_user=:uid && download_id = '$id'");
+    $stmt1->execute(array(":uid"=>$_SESSION['user_session']));
+    $row1=$stmt1->fetch(PDO::FETCH_ASSOC);
+    $url = $row1['download_url'];
+
 
           try
             {
 
             if(isset($_GET['did'])) {
-
-                $stmt = $db_con->prepare("DELETE FROM buapit_news WHERE news_id = '$id' ");
+                @unlink($url);
+                $stmt = $db_con->prepare("DELETE FROM buapit_download WHERE download_id = '$id' ");
 
                   if($stmt->execute())
                   {
-                   header("Location: ../news");
+                   header("Location: ../download");
                   }else {echo " เกิดข้อผิดพลาด !";}
             }
 
