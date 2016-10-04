@@ -15,6 +15,7 @@
     $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
         $byuser  = $row['user_id'];
+        $by  = $row['user_school_id'];
         $title = trim($_POST['title']);
         $content = trim($_POST['content']);
         $term = trim($_POST['term']);
@@ -24,13 +25,14 @@
         try
           {
            if ($_POST['title']=!"") {
-             $stmt = $db_con->prepare("INSERT INTO buapit_calendar(calendar_title,calendar_content,calendar_date_start,calendar_date_end,calendar_term,calendar_by) VALUES(:title, :con, :startday, :endday, :term,:by)");
+             $stmt = $db_con->prepare("INSERT INTO buapit_calendar(calendar_title,calendar_content,calendar_date_start,calendar_date_end,calendar_term,calendar_by,calendar_by_user) VALUES(:title, :con, :startday, :endday, :term,:by,:byu)");
              $stmt->bindParam(":title",$title);
              $stmt->bindParam(":con",$content);
              $stmt->bindParam(":startday",$start);
              $stmt->bindParam(":endday",$end);
              $stmt->bindParam(":term",$term);
-             $stmt->bindParam(":by",$byuser);
+             $stmt->bindParam(":by",$by);
+             $stmt->bindParam(":byu",$byuser);
 
              //ส่งค่ากลับไป
               if($stmt->execute())

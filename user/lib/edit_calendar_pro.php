@@ -15,6 +15,7 @@
     $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
     $byuser  = $row['user_id'];
+    $by  = $row['user_school_id'];
     $id  = trim($_POST['idcal']);
     $title = trim($_POST['title']);
     $content = trim($_POST['content']);
@@ -33,7 +34,8 @@
                     calendar_date_start = '$start',
                     calendar_date_end = '$end',
                     calendar_term = '$term',
-                    calendar_by = '$byuser'
+                    calendar_by = '$by',
+                    calendar_by_user = '$byuser'
                     WHERE calendar_id = '$id' ");
 
                    if($stmt->execute())

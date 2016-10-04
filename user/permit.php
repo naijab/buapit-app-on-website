@@ -11,9 +11,9 @@ require_once '../config/db.php';
   $stmt = $db_con->prepare("UPDATE buapit_user SET user_last_update = NOW() WHERE user_id=:uname");
   $stmt->execute(array(":uname"=>$_SESSION['user_session']));
 
-  $stmt = $db_con->prepare("SELECT * FROM buapit_user WHERE user_id=:uid");
-  $stmt->execute(array(":uid"=>$_SESSION['user_session']));
-  $row=$stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt1 = $db_con->prepare("SELECT * FROM buapit_user WHERE user_id=:uid");
+  $stmt1->execute(array(":uid"=>$_SESSION['user_session']));
+  $row1=$stmt1->fetch(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -23,7 +23,7 @@ require_once '../config/db.php';
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <?php require_once '../config/web_config.php';?>
-<title><?= $web_title; ?> : จัดการปฏิทินกิจกรรม</title>
+<title><?= $web_title; ?> : จัดการใบอนุญาตออกนอกโรงเรียน</title>
 </head>
 <body class="<?= $web_theme; ?>" style="<?= $web_font; ?>">
 
@@ -66,7 +66,7 @@ require_once '../config/db.php';
                     <!-- Call Search
                     <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>-->
                     <!-- #END# Call Search -->
-                    <li><a href="index">สวัสดี <?= $row['user_name']?></a></li>
+                    <li><a href="index">สวัสดี <?= $row1['user_name']?></a></li>
                     <li><a href="../logout">ออกจากระบบ</a></li>
                   </ul>
               </div>
@@ -82,8 +82,8 @@ require_once '../config/db.php';
 
                 </div>
                 <div class="info-container">
-                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  <?= $row['user_name']; ?><br>
-                    <?= $row['user_email']?></div>
+                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  <?= $row1['user_name']; ?><br>
+                    <?= $row1['user_email']?></div>
 
                 </div>
             </div>
@@ -124,13 +124,13 @@ require_once '../config/db.php';
                             <span>จัดการข่าวสารประชาสัมพันธ์</span>
                         </a>
                     </li>
-                    <li>
+                    <li  class="active">
                         <a href="permit">
                             <i class="material-icons">transfer_within_a_station</i>
                             <span>จัดการใบอนุญาตออกนอกโรงเรียน</span>
                         </a>
                     </li>
-                    <li  class="active">
+                    <li>
                         <a href="calendar">
                             <i class="material-icons">today</i>
                             <span>จัดการปฏิทินกิจกรรม</span>
@@ -167,44 +167,54 @@ require_once '../config/db.php';
                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table_content">
                       <div class="card">
                           <div class="header bg-orange">
-                              <h2>จัดการปฏิทินกิจกรรม</h2>
+                              <h2>จัดการใบอนุญาตออกนอกโรงเรียน</h2>
 
                           </div>
                           <div class="body">
-                            <button class="btn btn-success waves-effect waves-float" data-toggle="modal" data-target="#add_new_record_modal">เพิ่มรายการใหม่</button>
+
 <div class="table-responsive">
 <table class="table table-hover dashboard-task-infos">
 <thead>
 <tr>
  <th>#</th>
- <th>หัวข้อ</th>
- <th>เริ่มต้น</th>
- <th>สิ้นสุด</th>
- <th>ภาคการเรียน</th>
- <th>แก้ไข</th>
+ <th>รหัสนักเรียน</th>
+ <th>ชื่อ-สกุล</th>
+ <th>รายระเอียด</th>
+ <th>สถานะ</th>
+ <th>อนุญาต</th>
 </tr>
 </thead>
 <tbody>
   <?php
-        $stmt = $db_con->prepare("SELECT * FROM buapit_calendar WHERE calendar_by = {$row['user_school_id']} && calendar_by_user = {$row['user_id']} ORDER BY calendar_id DESC");
+        $stmt = $db_con->prepare("SELECT * FROM buapit_permit WHERE permit_by = {$row1['user_school_id']} ORDER BY permit_id DESC");
         $stmt->execute();
         $row=$stmt->fetchAll(PDO::FETCH_ASSOC);
         $num=1;
 
         foreach ($row as $row) {
-
+          if($row['permit_status']=="อนุญาต"){$active = "<div class='col-green'>อนุญาต</div>";}
+          else if($row['permit_status']=="ไม่อนุญาต"){$active = "<div class='col-red'>ไม่อนุญาต</div>";}
+          else {$active = "<div>รอผล</div>";}
         ?>
             <tr>
-            <td><?php echo $num++; ?></td>
-            <td><?php echo $row['calendar_title']; ?></td>
-            <td><?php echo $row['calendar_date_start']; ?></td>
-            <td><?php echo $row['calendar_date_end']; ?></td>
-            <td><?php echo $row['calendar_term']; ?></td>
-            <td>
-            <a id="edit-btn" class="btn btn-warning waves-effect waves-float" href="edit_calendar?eid=<?php echo $row['calendar_id']; ?>" >
-            แก้ไข</a>
-            <a id="<?php echo $row['news_id']; ?>" class="btn btn-danger waves-effect waves-float" href="javascript:delete_id(<?php echo $row['calendar_id']; ?>)">
-            ลบ
+            <td class="col-md-1"><?php echo $num++; ?></td>
+            <td class="col-md-1"><?php echo $row['permit_id_code']; ?></td>
+            <td class="col-md-3"><?php echo $row['permit_name']; ?><br>
+              <b> วันที่:</b> <?php echo $row['permit_create']; ?><br>
+              <b> ห้อง:</b> <?php echo $row['permit_class']; ?><br>
+              <b> เบอร์โทร:</b> <?php echo $row['permit_tel']; ?>
+            </td>
+            <td class="col-md-3">
+              <b> เพื่อ:</b> <?php echo $row['permit_casue']; ?><br>
+              <b> ที่:</b> <?php echo $row['permit_add']; ?><br>
+              <b> เริ่มต้น:</b> <?php echo $row['permit_start']; ?><br>
+              <b> สิ้นสุด:</b> <?php echo $row['permit_end']; ?><br>
+            </td>
+            <td class="col-md-2"><?php echo $active ?></td>
+            <td class="col-md-3">
+            <a class="btn btn-success waves-effect waves-float" href="lib/yes?yid=<?php echo $row['permit_id']; ?>" >
+            อนุญาติ</a>
+            <a class="btn btn-danger waves-effect waves-float" href="lib/no?nid=<?php echo $row['permit_id']; ?>">ไม่อนุญาต
                   </a></td>
             </tr>
           <?php } ?>
@@ -219,90 +229,9 @@ require_once '../config/db.php';
                   </div>
                   <!-- #END# Task Info -->
 
-                  <!-- Bootstrap Modal - To Add New Record -->
-                  <!-- Modal -->
-                  <div class="modal fade" id="add_new_record_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog modal-md" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">เพิ่มรายการใหม่</h4>
-                  </div>
-                  <div class="modal-body">
-              <!--Add form-->
-                <form action="lib/add_calendar" method="post" >
-                  <div class="row">
-                    <div class="col-md-8">
-                      <div class="form-group">
-                        <label class="form-label">หัวข้อ</label>
-                        <div class="form-line">
-                            <input type='text' name='title' id='title' class='form-control' placeholder='ใส่หัวข้อ' required />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="form-label">ภาคเรียน (เช่น ภาคเรียนที่ 1)</label>
-                        <div class="form-line">
-                            <input type='text' name='term' id='term' class='form-control' placeholder='ใส่ภาคเรียน' required />
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-
-                  <div class="form-group">
-                      <label class="form-label">คำอธิบายสั้นๆ</label>
-                      <div class="form-line">
-                        <textarea type='text' id='content' name='content' class='form-control' placeholder='ใส่คำอธิบายสั้นๆ' rows="3" cols="20" style="overflow-y: scroll; resize: none;" required></textarea>
-                    </div>
-                  </div>
-                <div class="row">
-                  <div class="form-group">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label class="form-label">วันเริ่มต้น (เช่น จันทร์ 5 ก.พ.2559)</label>
-                          <div class="form-line">
-                              <input type='text' name='start' id='start' class='form-control' placeholder='ใส่วันเริ่มต้น' required />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label class="form-label">วันสิ้นสุด (เช่น อังคาร 6 ก.พ.2559)</label>
-                          <div class="form-line">
-                              <input type='text' name='end' id='end' class='form-control' placeholder='ใส่วันสิ้นสุด' required />
-                          </div>
-                        </div>
-                      </div>
-                  </div>
-                </div>
-
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">ยกเลิก</button>
-                    <button type="submit" onclick="return edit_user_form();" class="btn btn-primary btn-lg">บันทึก</button>
-                  </form>
-                  </div>
-                </div>
-                </div>
-              </div>
-              <!-- End Modal Add -->
 
               </div>
           </div>
       </section>
-
-      <script type="text/javascript">
-        function delete_id(id)
-            {
-                if(confirm('ต้องการลบใช่หรือไม่ ?'))
-                 {
-                 window.location.href='lib/delete_calendar?did='+id;
-                 }
-            }
-    </script>
-
-
 </body>
 </html>

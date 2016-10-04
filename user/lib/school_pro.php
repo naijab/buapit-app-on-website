@@ -19,7 +19,7 @@
         $idname = trim($_POST['school-id']);
         $schoolname = trim($_POST['school']);
         $history = trim($_POST['history']);
-        $address = $_POST['address']);
+        $address = trim($_POST['address']);
         $tel = trim($_POST['tel']);
         $tel2 = trim($_POST['tel2']);
         $under = trim($_POST['under']);

@@ -2,6 +2,15 @@ http://localhost/buapit/user/json/json_school?id=1039760327&key=avgfefAgfsdRdCid
 
 http://localhost/buapit/user/json/json_news?id=1039760327&key=avgfefAgfsdRdCidlVREWSfelfLKAqwporzcgo
 
+http://localhost/buapit/user/json/json_calendar?id=1039760327&key=avgfefAgfsdRdCidlVREWSfelfLKAqwporzcgo
+
+http://localhost/buapit/user/json/json_download?id=1039760327&key=avgfefAgfsdRdCidlVREWSfelfLKAqwporzcgo
+
+http://localhost/buapit/user/json/json_permit?id=1039760327&key=avgfefAgfsdRdCidlVREWSfelfLKAqwporzcgo
+
+http://localhost/buapit/user/json/json_person?id=1039760327&key=avgfefAgfsdRdCidlVREWSfelfLKAqwporzcgo
+
+
 
 buapit_user
 ------
@@ -80,4 +89,21 @@ person_position
 person_tel
 person_school_id
 person_faction
+------------------
+
+
+buapit_permit
+------
+permit_id
+permit_id_code
+permit_name
+permit_class
+permit_tel
+permit_casue
+permit_add
+permit_start
+permit_end
+permit_by
+permit_status
+permit_create
 ------------------

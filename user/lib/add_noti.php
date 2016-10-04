@@ -6,7 +6,7 @@
     }
     require_once '../../config/db.php';
     require_once '../../config/web_config.php';
-    
+
     $stmt = $db_con->prepare("UPDATE buapit_user SET user_last_update = NOW() WHERE user_id=:uname");
     $stmt->execute(array(":uname"=>$_SESSION['user_session']));
 
@@ -68,14 +68,16 @@
         //$message = trim($_POST['mg']);
         //$create  = date("Y-m-d H:i:s");
         //$modified  = date("Y-m-d H:i:s");
+        $by  = $row['user_school_id'];
         $byuser  = $row['user_id'];
 
         try
           {
            if ($_POST['message']=!"") {
-             $stmt = $db_con->prepare("INSERT INTO buapit_noti(noti_title,noti_create,noti_by) VALUES(:title, NOW(),:by)");
+             $stmt = $db_con->prepare("INSERT INTO buapit_noti(noti_title,noti_create,noti_by,noti_by_user) VALUES(:title, NOW(),:by,:byu)");
              $stmt->bindParam(":title",$mg);
-             $stmt->bindParam(":by",$byuser);
+             $stmt->bindParam(":by",$by);
+             $stmt->bindParam(":byu",$byuser);
 
              //ส่งค่ากลับไป
               if($stmt->execute())

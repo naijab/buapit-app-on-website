@@ -17,10 +17,35 @@ require_once '../config/db.php';
   $stmt->execute(array(":uid"=>$_SESSION['user_session']));
   $row=$stmt->fetch(PDO::FETCH_ASSOC);
 
-  $stmt_news = $db_con->prepare("SELECT * FROM buapit_news WHERE news_by_user=:uid");
+  $stmt_news = $db_con->prepare("SELECT COUNT(*) FROM buapit_news WHERE news_by_user=:uid");
   $stmt_news->execute(array(":uid"=>$row['user_id']));
-  $row_news = $stmt_news->fetch(PDO::FETCH_ASSOC);
-  $row_cout_news = $stmt_news->rowCount();
+  $stmt_news->execute();
+  //$row_news = $stmt_news->fetch(PDO::FETCH_ASSOC);
+  $row_cout_news = $stmt_news->fetchColumn(0);
+
+  $stmt_1 = $db_con->prepare("SELECT COUNT(*) FROM buapit_permit WHERE permit_by=:sid");
+  $stmt_1->execute(array(":sid"=>$row['user_school_id']));
+  $stmt_1->execute();
+  //$row_1 = $stmt_1->fetch(PDO::FETCH_ASSOC);
+  $row_cout_1 = $stmt_1->fetchColumn(0);
+
+  $stmt_2 = $db_con->prepare("SELECT COUNT(*) FROM buapit_download WHERE download_by_user=:xid");
+  $stmt_2->execute(array(":xid"=>$row['user_id']));
+  $stmt_2->execute();
+  //$row_2 = $stmt_2->fetch(PDO::FETCH_ASSOC);
+  $row_cout_2 = $stmt_2->fetchColumn(0);
+
+  $stmt_3 = $db_con->prepare("SELECT COUNT(*) FROM buapit_noti WHERE noti_by = {$row['user_school_id']} && noti_by_user = {$row['user_id']}");
+  // $row_3 = $stmt_3->fetch(PDO::FETCH_ASSOC);
+  //$row_cout_3 = $stmt_3->rowCount();
+  $stmt_3->execute();
+  $row_cout_3 = $stmt_3->fetchColumn(0);
+
+  $stmt_4 = $db_con->prepare("SELECT * FROM buapit_data WHERE school_id_code=:jid");
+  $stmt_4->execute(array(":jid"=>$row['user_school_id']));
+  $stmt_4->execute();
+  $row_4 = $stmt_4->fetch(PDO::FETCH_ASSOC);
+  $row_cout_4 = $stmt_4->fetchColumn(0);
 
 ?>
 
@@ -177,44 +202,46 @@ require_once '../config/db.php';
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                       <div class="info-box bg-pink hover-expand-effect">
                           <div class="icon">
-                              <i class="material-icons">chat</i>
+                              <i class="material-icons">speaker_phone</i>
                           </div>
                           <div class="content">
-                              <div class="text" style="font-size:16px;">ข่าวประชาสัมพันธ์</div>
-                              <div class="number count-to" data-from="0" data-to="<?= $row_cout_news; ?>" data-speed="15" data-fresh-interval="20"></div>
+                              <div class="text" style="font-size:17px;">ข้อความแจ้งเตือน</div>
+                              <div class="number count-to" data-from="0" data-to="<?= $row_cout_3; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                       <div class="info-box bg-cyan hover-expand-effect">
                           <div class="icon">
-                              <i class="material-icons">help</i>
+                              <i class="material-icons">chat</i>
                           </div>
                           <div class="content">
-                             <div class="text" style="font-size:16px;">ใบขออนุญาติ</div>
+                             <div class="text" style="font-size:17px;">ข่าวประชาสัมพันธ์</div>
                              <div class="number count-to" data-from="0" data-to="<?= $row_cout_news; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
                       <div class="info-box bg-light-green hover-expand-effect">
                           <div class="icon">
-                              <i class="material-icons">forum</i>
+                              <i class="material-icons">transfer_within_a_station</i>
                           </div>
                           <div class="content">
-                             <div class="text" style="font-size:16px;">ไฟล์ดาวน์โหลด</div>
-                             <div class="number count-to" data-from="0" data-to="<?= $row_cout_news; ?>" data-speed="15" data-fresh-interval="20"></div>
+                             <div class="text" style="font-size:17px;">ใบขออนุญาต</div>
+                             <div class="number count-to" data-from="0" data-to="<?= $row_cout_1; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
+
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                       <div class="info-box bg-orange hover-expand-effect">
                           <div class="icon">
-                              <i class="material-icons">person_add</i>
+                              <i class="material-icons">get_app</i>
                           </div>
                           <div class="content">
-                             <div class="text" style="font-size:16px;">ข้อความแจ้งเตือน</div>
-                             <div class="number count-to" data-from="0" data-to="<?= $row_cout_news; ?>" data-speed="15" data-fresh-interval="20"></div>
+                             <div class="text" style="font-size:17px;">ไฟล์ดาวน์โหลด</div>
+                             <div class="number count-to" data-from="0" data-to="<?= $row_cout_2; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
                   </div>
@@ -230,92 +257,22 @@ require_once '../config/db.php';
                   <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                       <div class="card">
                           <div class="header">
-                              <h2>TASK INFOS</h2>
-                              <ul class="header-dropdown m-r--5">
-                                  <li class="dropdown">
-                                      <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                          <i class="material-icons">more_vert</i>
-                                      </a>
-                                      <ul class="dropdown-menu pull-right">
-                                          <li><a href="javascript:void(0);">Action</a></li>
-                                          <li><a href="javascript:void(0);">Another action</a></li>
-                                          <li><a href="javascript:void(0);">Something else here</a></li>
-                                      </ul>
-                                  </li>
-                              </ul>
+                              <h2><b>ข้อมูลโรงเรียน</b></h2>
                           </div>
                           <div class="body">
-                              <div class="table-responsive">
-                                  <table class="table table-hover dashboard-task-infos">
-                                      <thead>
-                                          <tr>
-                                              <th>#</th>
-                                              <th>Task</th>
-                                              <th>Status</th>
-                                              <th>Manager</th>
-                                              <th>Progress</th>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                                          <tr>
-                                              <td>1</td>
-                                              <td>Task A</td>
-                                              <td><span class="label bg-green">Doing</span></td>
-                                              <td>John Doe</td>
-                                              <td>
-                                                  <div class="progress">
-                                                      <div class="progress-bar bg-green" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" style="width: 62%"></div>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td>2</td>
-                                              <td>Task B</td>
-                                              <td><span class="label bg-blue">To Do</span></td>
-                                              <td>John Doe</td>
-                                              <td>
-                                                  <div class="progress">
-                                                      <div class="progress-bar bg-blue" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"></div>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td>3</td>
-                                              <td>Task C</td>
-                                              <td><span class="label bg-light-blue">On Hold</span></td>
-                                              <td>John Doe</td>
-                                              <td>
-                                                  <div class="progress">
-                                                      <div class="progress-bar bg-light-blue" role="progressbar" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" style="width: 72%"></div>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td>4</td>
-                                              <td>Task D</td>
-                                              <td><span class="label bg-orange">Wait Approvel</span></td>
-                                              <td>John Doe</td>
-                                              <td>
-                                                  <div class="progress">
-                                                      <div class="progress-bar bg-orange" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" style="width: 95%"></div>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td>5</td>
-                                              <td>Task E</td>
-                                              <td>
-                                                  <span class="label bg-red">Suspended</span>
-                                              </td>
-                                              <td>John Doe</td>
-                                              <td>
-                                                  <div class="progress">
-                                                      <div class="progress-bar bg-red" role="progressbar" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100" style="width: 87%"></div>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                      </tbody>
-                                  </table>
+                              <div class="row">
+
+                              <div class="col-md-12">
+                                <ul class="list-group">
+                                    <li class="list-group-item"><b>รหัสโรงเรียน</b> <?= $row_4['school_id_code'] ?></li>
+                                    <li class="list-group-item"><b>ชื่อโรงเรียน</b> <?= $row_4['school_name']  ?></li>
+                                    <li class="list-group-item"><b>ที่อยู่โรงเรียน</b> <?= $row_4['school_address']  ?></li>
+                                    <li class="list-group-item"><b>เบอร์โทรศัพท์</b> <?= $row_4['school_tel']  ?>์</li>
+                                </ul>
+                                <a class="btn btn-warning waves-effect waves-float" href="school">จัดการข้อมูลโรงเรียน</a>
+
+                              </div>
+
                               </div>
                           </div>
                       </div>
@@ -325,19 +282,8 @@ require_once '../config/db.php';
                   <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                       <div class="card">
                           <div class="header">
-                              <h2>ข้อมูลส่วนตัว</h2>
-                              <ul class="header-dropdown m-r--5">
-                                  <li class="dropdown">
-                                      <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                          <i class="material-icons">more_vert</i>
-                                      </a>
-                                      <ul class="dropdown-menu pull-right">
-                                          <li><a href="javascript:void(0);">Action</a></li>
-                                          <li><a href="javascript:void(0);">Another action</a></li>
-                                          <li><a href="javascript:void(0);">Something else here</a></li>
-                                      </ul>
-                                  </li>
-                              </ul>
+                              <h2><b>ข้อมูลส่วนตัว</b></h2>
+
                           </div>
                           <div class="body" >
 
