@@ -1,7 +1,13 @@
 ﻿/* Navbar ====================================== */
 @import url(materialize.css);
+
+html {
+  /*font-family:sans-serif;*/
+	font-family: 'Athiti', sans-serif;
+}
 .navbar {
-  font-family: "Roboto", sans-serif;
+  /*font-family:sans-serif;*/
+	font-family: 'Athiti', sans-serif;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   -ms-border-radius: 0;
@@ -6331,7 +6337,7 @@ fieldset[disabled] .form-control {
 
 /* Navbars ===================================== */
 .navbar {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Athiti', sans-serif;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   -ms-border-radius: 0;
@@ -7130,7 +7136,8 @@ fieldset[disabled] .form-control {
     transition: all 0.5s;
     font-size: 14px;
     line-height: 25px; }
-    .dropdown-menu > li > a:hover {
+    .dropdown-menu > li > a:hover
+    {
       background-color: rgba(0, 0, 0, 0.075); }
     .dropdown-menu > li > a i.material-icons {
       float: left;
@@ -7165,7 +7172,8 @@ fieldset[disabled] .form-control {
   -o-transition: all 0.5s;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
-  font-family: "Roboto", sans-serif;
+  /*font-family: "Roboto", sans-serif; */
+  font-family: 'Athiti', sans-serif;
   background: #fdfdfd;
   width: 300px;
   overflow: hidden;
@@ -7265,6 +7273,7 @@ fieldset[disabled] .form-control {
       .sidebar .menu .list .header {
         background: #eee;
         font-size: 12px;
+
         font-weight: 600;
         padding: 8px 16px; }
       .sidebar .menu .list i.material-icons {
@@ -7713,4 +7722,3 @@ html.ie11 .dropdown-menu ul.menu li a {
 
 html.ie11 .bs-searchbox .form-control {
   width: 90%; }
-

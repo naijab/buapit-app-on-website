@@ -1,44 +1,45 @@
 <?php
-include 'config/db.php';
-
+  require_once 'config/db.php';
+  $web_font = "font-family: 'Athiti', sans-serif;";
 ?>
+    <!doctype>
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <title>หน้าแรก : เข้าสู่ระบบ</title>
+    <script type="text/javascript" src="js/jquery-1.11.3-jquery.min.js"></script>
+    <script type="text/javascript" src="js/validation.min.js"></script>
+    <script type="text/javascript" src="js/script_login.js"></script>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 
-<!doctype>
-<html>
-<head>
-<meta charset="utf-8">
-<title>หน้าแรก : เข้าสู่ระบบ</title>
-<script type="text/javascript" src="js/jquery-1.11.3-jquery.min.js"></script>
-<script type="text/javascript" src="js/validation.min.js"></script>
-<script type="text/javascript" src="js/script_login.js"></script>
-<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <!-- Bootstrap Core Css -->
+    <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
 
-<!-- Bootstrap Core Css -->
-<link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <!-- Waves Effect Css -->
+    <link href="plugins/node-waves/waves.css" rel="stylesheet" />
 
-<!-- Waves Effect Css -->
-<link href="plugins/node-waves/waves.css" rel="stylesheet" />
+    <!-- Animation Css -->
+    <link href="plugins/animate-css/animate.css" rel="stylesheet" />
 
-<!-- Animation Css -->
-<link href="plugins/animate-css/animate.css" rel="stylesheet" />
+    <!-- Preloader Css -->
+    <link href="plugins/material-design-preloader/md-preloader.css" rel="stylesheet" />
 
-<!-- Preloader Css -->
-<link href="plugins/material-design-preloader/md-preloader.css" rel="stylesheet" />
+    <!-- Morris Chart Css-->
+    <link href="plugins/morrisjs/morris.css" rel="stylesheet" />
 
-<!-- Morris Chart Css-->
-<link href="plugins/morrisjs/morris.css" rel="stylesheet" />
+    <!-- Custom Css -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/themes/all-themes.css" rel="stylesheet" />
 
-<!-- Custom Css -->
-<link href="css/style.css" rel="stylesheet">
-<link href="css/themes/all-themes.css" rel="stylesheet" />
-
-<!-- Google Fonts -->
- <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <!-- Google Fonts -->
+     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 </head>
 <body>
 
-<div class="container" style="max-width:400px;">
+
+<div class="container" style="max-width:400px; <?= $web_font ?>">
+  <div class="card" style="max-width:400px; padding:10px; margin:60px 0 0 0;">
 <!--
   <form class="form-signin" method="post" action="login_process.php" id="register-form"> -->
 <form class="form-signin" method="post" id="login-form">
@@ -50,33 +51,36 @@ include 'config/db.php';
 
         <div class="form-group">
         <div class="input-group">
-        <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-        <input type="text" class="form-control" placeholder="ชื่อผู้ใช้" name="username" id="username" />
+            <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
+          <div class="form-line">
+            <input type="text" class="form-control" placeholder="ชื่อผู้ใช้" name="username" id="username" />
+          </div>
         </div>
         </div>
 
         <div class="form-group">
         <div class="input-group">
-        <div class="input-group-addon"><span class="glyphicon glyphicon glyphicon-lock"></span></div>
-        <input type="password" class="form-control" placeholder="รหัสผ่าน" name="password" id="password" />
+            <div class="input-group-addon"><span class="glyphicon glyphicon glyphicon-lock"></span></div>
+          <div class="form-line">
+            <input type="password" class="form-control" placeholder="รหัสผ่าน" name="password" id="password" />
+          </div>
         </div>
         </div>
 
       <hr />
 
         <div class="form-group">
-        <button type="submit" class="btn btn-success" name="btn-login" id="btn-login">
+        <button type="submit" class="btn btn-success btn-lg" name="btn-login" id="btn-login">
             <span class="glyphicon glyphicon-log-in"></span> &nbsp; เข้าสู่ระบบ
          </button>
-         <a href="join.php" class="btn btn-info pull-right">
+         <a href="join" class="btn btn-info pull-right btn-lg">
             <span class="glyphicon glyphicon-log-in"></span> &nbsp; สมัครสมาชิก
          </a>
         </div>
 
-      </form> 
-
-
+      </form>
   </div>
+</div>
   <!-- Jquery Core Js -->
   <script src="../plugins/jquery/jquery.min.js"></script>
   <!-- Bootstrap Core Js -->
@@ -116,6 +120,5 @@ include 'config/db.php';
      .addClass('table table-bordered');
     });
   </script>
-
 </body>
 </html>

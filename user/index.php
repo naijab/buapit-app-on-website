@@ -6,16 +6,47 @@ if(!isset($_SESSION['user_session']))
  header("Location: ../index.php");
 }
 
-include_once '../config/db.php';
+require_once '../config/db.php';
 
   //อัพเดตเวลาล็อกอิน
   $stmt = $db_con->prepare("UPDATE buapit_user SET user_last_update = NOW() WHERE user_id=:uname");
   $stmt->execute(array(":uname"=>$_SESSION['user_session']));
 
-  //ดึงข้อมูลจากตาราง
+  //ดึงข้อมูลจากตารางผู้ใช้
   $stmt = $db_con->prepare("SELECT * FROM buapit_user WHERE user_id=:uid");
   $stmt->execute(array(":uid"=>$_SESSION['user_session']));
   $row=$stmt->fetch(PDO::FETCH_ASSOC);
+
+  $stmt_news = $db_con->prepare("SELECT COUNT(*) FROM buapit_news WHERE news_by_user=:uid");
+  $stmt_news->execute(array(":uid"=>$row['user_id']));
+  $stmt_news->execute();
+  //$row_news = $stmt_news->fetch(PDO::FETCH_ASSOC);
+  $row_cout_news = $stmt_news->fetchColumn(0);
+
+  $stmt_1 = $db_con->prepare("SELECT COUNT(*) FROM buapit_permit WHERE permit_by=:sid");
+  $stmt_1->execute(array(":sid"=>$row['user_school_id']));
+  $stmt_1->execute();
+  //$row_1 = $stmt_1->fetch(PDO::FETCH_ASSOC);
+  $row_cout_1 = $stmt_1->fetchColumn(0);
+
+  $stmt_2 = $db_con->prepare("SELECT COUNT(*) FROM buapit_download WHERE download_by_user=:xid");
+  $stmt_2->execute(array(":xid"=>$row['user_id']));
+  $stmt_2->execute();
+  //$row_2 = $stmt_2->fetch(PDO::FETCH_ASSOC);
+  $row_cout_2 = $stmt_2->fetchColumn(0);
+
+  $stmt_3 = $db_con->prepare("SELECT COUNT(*) FROM buapit_noti WHERE noti_by = {$row['user_school_id']} && noti_by_user = {$row['user_id']}");
+  // $row_3 = $stmt_3->fetch(PDO::FETCH_ASSOC);
+  //$row_cout_3 = $stmt_3->rowCount();
+  $stmt_3->execute();
+  $row_cout_3 = $stmt_3->fetchColumn(0);
+
+  $stmt_4 = $db_con->prepare("SELECT * FROM buapit_data WHERE school_id_code=:jid");
+  $stmt_4->execute(array(":jid"=>$row['user_school_id']));
+  $stmt_4->execute();
+  $row_4 = $stmt_4->fetch(PDO::FETCH_ASSOC);
+  $row_cout_4 = $stmt_4->fetchColumn(0);
+
 ?>
 
 <html>
@@ -23,35 +54,10 @@ include_once '../config/db.php';
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-<title>หน้าสมาชิก</title>
-<script type="text/javascript" src="../js/jquery-1.11.3-jquery.min.js"></script>
-<script type="text/javascript" src="../js/validation.min.js"></script>
-
-   <!-- Bootstrap Core Css -->
-   <link href="../plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
-
-   <!-- Waves Effect Css -->
-   <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
-
-   <!-- Animation Css -->
-   <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
-
-   <!-- Preloader Css -->
-   <link href="../plugins/material-design-preloader/md-preloader.css" rel="stylesheet" />
-
-   <!-- Morris Chart Css-->
-   <link href="../plugins/morrisjs/morris.css" rel="stylesheet" />
-
-   <!-- Custom Css -->
-   <link href="../css/style.css" rel="stylesheet">
-   <link href="../css/themes/all-themes.css" rel="stylesheet" />
-
-   <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-
+<?php require_once '../config/web_config.php';?>
+<title><?= $web_title; ?> : หน้าแรก</title>
 </head>
-<body class="theme-pink">
+<body class="<?= $web_theme; ?>" style="<?= $web_font; ?>">
 
   <!-- Page Loader -->
       <div class="page-loader-wrapper">
@@ -85,15 +91,15 @@ include_once '../config/db.php';
               <div class="navbar-header">
                   <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                   <a href="javascript:void(0);" class="bars"></a>
-                  <a class="navbar-brand" href="index.html">ระบบจัดการแอพพลิเคชั่น Buapit</a>
+                  <a class="navbar-brand" href="index"><b><?= $web_title ?></b></a>
               </div>
               <div class="collapse navbar-collapse" id="navbar-collapse">
                   <ul class="nav navbar-nav navbar-right">
-                      <!-- Call Search -->
-                      <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>
-                      <!-- #END# Call Search -->
-                      <li><a href="../logout.php">ออกจากระบบ</a></li>
-
+                    <!-- Call Search
+                    <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>-->
+                    <!-- #END# Call Search -->
+                    <li><a href="index">สวัสดี <?= $row['user_name']?></a></li>
+                    <li><a href="../logout">ออกจากระบบ</a></li>
                   </ul>
               </div>
           </div>
@@ -103,20 +109,14 @@ include_once '../config/db.php';
           <!-- Left Sidebar -->
           <aside id="leftsidebar" class="sidebar">
               <!-- User Info -->
-              <div class="user-info">
+              <div class="user-info" style="max-height:100px;">
                   <div class="image">
 
                   </div>
                   <div class="info-container">
-                      <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $row['user_name']; ?></div>
-                      <div class="btn-group user-helper-dropdown">
-                          <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
-                          <ul class="dropdown-menu pull-right">
-                              <li><a href="javascript:void(0);"><i class="material-icons">person</i>แก้ไขข้อมูลส่วนตัว</a></li>
-                              <li role="seperator" class="divider"></li>
-                              <li><a href="../logout.php"><i class="material-icons">input</i>ออกจากระบบ</a></li>
-                          </ul>
-                      </div>
+                      <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?= $row['user_name']; ?><br>
+                      <?= $row['user_email']?></div>
                   </div>
               </div>
               <!-- #User Info -->
@@ -125,76 +125,55 @@ include_once '../config/db.php';
                   <ul class="list">
                       <li class="header">เมนูหลัก</li>
                       <li class="active">
-                          <a href="index.php">
+                          <a href="index">
                               <i class="material-icons">home</i>
                               <span>หน้าแรก</span>
                           </a>
                       </li>
                       <li>
-                          <a href="javascript:void(0);" class="menu-toggle">
-                              <i class="material-icons">recent_actors</i>
-                              <span>จัดการข้อมูลโรงเรียน</span>
+                         <a href="javascript:void(0);" class="menu-toggle">
+                             <i class="material-icons">recent_actors</i>
+                             <span>จัดการข้อมูลโรงเรียน</span>
+                         </a>
+                         <ul class="ml-menu">
+                             <li>
+                                 <a href="school">จัดการข้อมูลโรงเรียน</a>
+                             </li>
+                             <li>
+                                 <a href="person">จัดการบุคลากร</a>
+                             </li>
+                         </ul>
+                     </li>
+                      <li>
+                          <a href="notification">
+                              <i class="material-icons">speaker_phone</i>
+                              <span>จัดการข้อความแจ้งเตือน</span>
                           </a>
-                          <ul class="ml-menu">
-                                      <li>
-                                          <a href="school_data.php">ข้อมูลโรงเรียน</a>
-                                      </li>
-                                      <li>
-                                          <a href="school_person.php">ข้อมูลบุคลากร</a>
-                                      </li>
-                                      <li>
-                                          <a href="school_student.php">ข้อมูลนักเรียน</a>
-                                      </li>
-                            </ul>
                       </li>
                       <li>
-                          <a href="javascript:void(0);" class="menu-toggle">
+                          <a href="news">
                               <i class="material-icons">chat</i>
                               <span>จัดการข่าวสารประชาสัมพันธ์</span>
                           </a>
-                              <ul class="ml-menu">
-                                      <li>
-                                          <a href="news_student.php">นักเรียน</a>
-                                      </li>
-                                      <li>
-                                          <a href="news_teacher.php">คุณครู</a>
-                                      </li>
-                                      <li>
-                                          <a href="news_finance.php">ธุรการ / พัสดุ / การเงิน</a>
-                                      </li>
-                               </ul>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0);" class="menu-toggle">
-                                  <i class="material-icons">assistant</i>
-                                  <span>จัดการรางวัล</span>
-                              </a>
-                              <ul class="ml-menu">
-                                          <li>
-                                              <a href="portfolio_edu.php">วิชาการ</a>
-                                          </li>
-                                          <li>
-                                              <a href="portfolio_sport.php">กีฬา</a>
-                                          </li>
-                                          <li>
-                                              <a href="portfolio_good.php">คุณธรรม</a>
-                                          </li>
-                                </ul>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0);" class="menu-toggle">
-                                  <i class="material-icons">today</i>
-                                  <span>จัดการปฏิทินกิจกรรม</span>
-                              </a>
-                              <ul class="ml-menu">
-                                          <li>
-                                              <a href="calendar_1.php">เทอมเรียน 1</a>
-                                          </li>
-                                          <li>
-                                              <a href="calendar_2.php">เทอมเรียน 2</a>
-                                          </li>
-                                </ul>
-                          </li>
+                      </li>
+                      <li>
+                          <a href="permit">
+                              <i class="material-icons">transfer_within_a_station</i>
+                              <span>จัดการใบอนุญาตออกนอกโรงเรียน</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="calendar">
+                              <i class="material-icons">today</i>
+                              <span>จัดการปฏิทินกิจกรรม</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="download">
+                              <i class="material-icons">get_app</i>
+                              <span>จัดการไฟล์ดาวน์โหลด</span>
+                          </a>
+                      </li>
                   </ul>
               </div>
               <!-- #Menu -->
@@ -215,7 +194,7 @@ include_once '../config/db.php';
       <section class="content">
           <div class="container-fluid">
               <div class="block-header">
-                  <h2>DASHBOARD</h2>
+                  <h1>จัดการระบบ แอพพลิเคชันโรงเรียน (SADA.OS)</h1>
               </div>
 
               <!-- Widgets -->
@@ -223,145 +202,54 @@ include_once '../config/db.php';
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                       <div class="info-box bg-pink hover-expand-effect">
                           <div class="icon">
-                              <i class="material-icons">playlist_add_check</i>
+                              <i class="material-icons">speaker_phone</i>
                           </div>
                           <div class="content">
-                              <div class="text">NEW TASKS</div>
-                              <div class="number count-to" data-from="0" data-to="125" data-speed="15" data-fresh-interval="20"></div>
+                              <div class="text" style="font-size:17px;">ข้อความแจ้งเตือน</div>
+                              <div class="number count-to" data-from="0" data-to="<?= $row_cout_3; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                       <div class="info-box bg-cyan hover-expand-effect">
                           <div class="icon">
-                              <i class="material-icons">help</i>
+                              <i class="material-icons">chat</i>
                           </div>
                           <div class="content">
-                              <div class="text">NEW TICKETS</div>
-                              <div class="number count-to" data-from="0" data-to="257" data-speed="1000" data-fresh-interval="20"></div>
+                             <div class="text" style="font-size:17px;">ข่าวประชาสัมพันธ์</div>
+                             <div class="number count-to" data-from="0" data-to="<?= $row_cout_news; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
                       <div class="info-box bg-light-green hover-expand-effect">
                           <div class="icon">
-                              <i class="material-icons">forum</i>
+                              <i class="material-icons">transfer_within_a_station</i>
                           </div>
                           <div class="content">
-                              <div class="text">NEW COMMENTS</div>
-                              <div class="number count-to" data-from="0" data-to="243" data-speed="1000" data-fresh-interval="20"></div>
+                             <div class="text" style="font-size:17px;">ใบขออนุญาต</div>
+                             <div class="number count-to" data-from="0" data-to="<?= $row_cout_1; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
+
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                       <div class="info-box bg-orange hover-expand-effect">
                           <div class="icon">
-                              <i class="material-icons">person_add</i>
+                              <i class="material-icons">get_app</i>
                           </div>
                           <div class="content">
-                              <div class="text">NEW VISITORS</div>
-                              <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20"></div>
+                             <div class="text" style="font-size:17px;">ไฟล์ดาวน์โหลด</div>
+                             <div class="number count-to" data-from="0" data-to="<?= $row_cout_2; ?>" data-speed="15" data-fresh-interval="20"></div>
                           </div>
                       </div>
                   </div>
+
               </div>
               <!-- #END# Widgets -->
               <div class="row clearfix">
-                  <!-- Visitors -->
-                  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                      <div class="card">
-                          <div class="body bg-pink">
-                              <div class="sparkline" data-type="line" data-spot-Radius="4" data-highlight-Spot-Color="rgb(233, 30, 99)" data-highlight-Line-Color="#fff"
-                                   data-min-Spot-Color="rgb(255,255,255)" data-max-Spot-Color="rgb(255,255,255)" data-spot-Color="rgb(255,255,255)"
-                                   data-offset="90" data-width="100%" data-height="92px" data-line-Width="2" data-line-Color="rgba(255,255,255,0.7)"
-                                   data-fill-Color="rgba(0, 188, 212, 0)">
-                                  12,10,9,6,5,6,10,5,7,5,12,13,7,12,11
-                              </div>
-                              <ul class="dashboard-stat-list">
-                                  <li>
-                                      TODAY
-                                      <span class="pull-right"><b>1 200</b> <small>USERS</small></span>
-                                  </li>
-                                  <li>
-                                      YESTERDAY
-                                      <span class="pull-right"><b>3 872</b> <small>USERS</small></span>
-                                  </li>
-                                  <li>
-                                      LAST WEEK
-                                      <span class="pull-right"><b>26 582</b> <small>USERS</small></span>
-                                  </li>
-                              </ul>
-                          </div>
-                      </div>
-                  </div>
-                  <!-- #END# Visitors -->
-                  <!-- Latest Social Trends -->
-                  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                      <div class="card">
-                          <div class="body bg-cyan">
-                              <div class="m-b--35 font-bold">LATEST SOCIAL TRENDS</div>
-                              <ul class="dashboard-stat-list">
-                                  <li>
-                                      #socialtrends
-                                      <span class="pull-right">
-                                          <i class="material-icons">trending_up</i>
-                                      </span>
-                                  </li>
-                                  <li>
-                                      #materialdesign
-                                      <span class="pull-right">
-                                          <i class="material-icons">trending_up</i>
-                                      </span>
-                                  </li>
-                                  <li>#adminbsb</li>
-                                  <li>#freeadmintemplate</li>
-                                  <li>#bootstraptemplate</li>
-                                  <li>
-                                      #freehtmltemplate
-                                      <span class="pull-right">
-                                          <i class="material-icons">trending_up</i>
-                                      </span>
-                                  </li>
-                              </ul>
-                          </div>
-                      </div>
-                  </div>
-                  <!-- #END# Latest Social Trends -->
-                  <!-- Answered Tickets -->
-                  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                      <div class="card">
-                          <div class="body bg-teal">
-                              <div class="font-bold m-b--35">ANSWERED TICKETS</div>
-                              <ul class="dashboard-stat-list">
-                                  <li>
-                                      TODAY
-                                      <span class="pull-right"><b>12</b> <small>TICKETS</small></span>
-                                  </li>
-                                  <li>
-                                      YESTERDAY
-                                      <span class="pull-right"><b>15</b> <small>TICKETS</small></span>
-                                  </li>
-                                  <li>
-                                      LAST WEEK
-                                      <span class="pull-right"><b>90</b> <small>TICKETS</small></span>
-                                  </li>
-                                  <li>
-                                      LAST MONTH
-                                      <span class="pull-right"><b>342</b> <small>TICKETS</small></span>
-                                  </li>
-                                  <li>
-                                      LAST YEAR
-                                      <span class="pull-right"><b>4 225</b> <small>TICKETS</small></span>
-                                  </li>
-                                  <li>
-                                      ALL
-                                      <span class="pull-right"><b>8 752</b> <small>TICKETS</small></span>
-                                  </li>
-                              </ul>
-                          </div>
-                      </div>
-                  </div>
-                  <!-- #END# Answered Tickets -->
+
               </div>
 
               <div class="row clearfix">
@@ -369,92 +257,22 @@ include_once '../config/db.php';
                   <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                       <div class="card">
                           <div class="header">
-                              <h2>TASK INFOS</h2>
-                              <ul class="header-dropdown m-r--5">
-                                  <li class="dropdown">
-                                      <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                          <i class="material-icons">more_vert</i>
-                                      </a>
-                                      <ul class="dropdown-menu pull-right">
-                                          <li><a href="javascript:void(0);">Action</a></li>
-                                          <li><a href="javascript:void(0);">Another action</a></li>
-                                          <li><a href="javascript:void(0);">Something else here</a></li>
-                                      </ul>
-                                  </li>
-                              </ul>
+                              <h2><b>ข้อมูลโรงเรียน</b></h2>
                           </div>
                           <div class="body">
-                              <div class="table-responsive">
-                                  <table class="table table-hover dashboard-task-infos">
-                                      <thead>
-                                          <tr>
-                                              <th>#</th>
-                                              <th>Task</th>
-                                              <th>Status</th>
-                                              <th>Manager</th>
-                                              <th>Progress</th>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                                          <tr>
-                                              <td>1</td>
-                                              <td>Task A</td>
-                                              <td><span class="label bg-green">Doing</span></td>
-                                              <td>John Doe</td>
-                                              <td>
-                                                  <div class="progress">
-                                                      <div class="progress-bar bg-green" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" style="width: 62%"></div>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td>2</td>
-                                              <td>Task B</td>
-                                              <td><span class="label bg-blue">To Do</span></td>
-                                              <td>John Doe</td>
-                                              <td>
-                                                  <div class="progress">
-                                                      <div class="progress-bar bg-blue" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"></div>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td>3</td>
-                                              <td>Task C</td>
-                                              <td><span class="label bg-light-blue">On Hold</span></td>
-                                              <td>John Doe</td>
-                                              <td>
-                                                  <div class="progress">
-                                                      <div class="progress-bar bg-light-blue" role="progressbar" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" style="width: 72%"></div>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td>4</td>
-                                              <td>Task D</td>
-                                              <td><span class="label bg-orange">Wait Approvel</span></td>
-                                              <td>John Doe</td>
-                                              <td>
-                                                  <div class="progress">
-                                                      <div class="progress-bar bg-orange" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" style="width: 95%"></div>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                          <tr>
-                                              <td>5</td>
-                                              <td>Task E</td>
-                                              <td>
-                                                  <span class="label bg-red">Suspended</span>
-                                              </td>
-                                              <td>John Doe</td>
-                                              <td>
-                                                  <div class="progress">
-                                                      <div class="progress-bar bg-red" role="progressbar" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100" style="width: 87%"></div>
-                                                  </div>
-                                              </td>
-                                          </tr>
-                                      </tbody>
-                                  </table>
+                              <div class="row">
+
+                              <div class="col-md-12">
+                                <ul class="list-group">
+                                    <li class="list-group-item"><b>รหัสโรงเรียน</b> <?= $row_4['school_id_code'] ?></li>
+                                    <li class="list-group-item"><b>ชื่อโรงเรียน</b> <?= $row_4['school_name']  ?></li>
+                                    <li class="list-group-item"><b>ที่อยู่โรงเรียน</b> <?= $row_4['school_address']  ?></li>
+                                    <li class="list-group-item"><b>เบอร์โทรศัพท์</b> <?= $row_4['school_tel']  ?>์</li>
+                                </ul>
+                                <a class="btn btn-warning waves-effect waves-float" href="school">จัดการข้อมูลโรงเรียน</a>
+
+                              </div>
+
                               </div>
                           </div>
                       </div>
@@ -464,22 +282,122 @@ include_once '../config/db.php';
                   <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                       <div class="card">
                           <div class="header">
-                              <h2>BROWSER USAGE</h2>
-                              <ul class="header-dropdown m-r--5">
-                                  <li class="dropdown">
-                                      <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                          <i class="material-icons">more_vert</i>
-                                      </a>
-                                      <ul class="dropdown-menu pull-right">
-                                          <li><a href="javascript:void(0);">Action</a></li>
-                                          <li><a href="javascript:void(0);">Another action</a></li>
-                                          <li><a href="javascript:void(0);">Something else here</a></li>
-                                      </ul>
-                                  </li>
-                              </ul>
+                              <h2><b>ข้อมูลส่วนตัว</b></h2>
+
                           </div>
-                          <div class="body">
-                              <div id="donut_chart" class="dashboard-donut-chart"></div>
+                          <div class="body" >
+
+                            <div class="row" style="padding:10px;">
+                              <div class="form-group"><h4>
+                                  <p id="pr-user" class="form-control-static">ชื่อผู้ใช้งาน:
+                                    <b class="<?= $web_color?>"> <?= $row['user_name']?></b></p>
+                                  <p id="pr-user" class="form-control-static"><b>ระดับ: </b>
+                                    <b class="<?= $web_color?>"><?php
+                                  if ($row['user_level']==300) {
+                                    echo "ผู้ดูแลระบบ (Admin)";
+                                  }
+                                  if ($row['user_level']==700) {
+                                    echo "ผู้จัดการระบบ (Super Admin)";
+                                  }
+                                  ?></b></p> </h4>
+                              </div>
+                              <button class="pull-right btn btn-success waves-effect waves-float" data-toggle="modal" data-target="#edit-profile">แก้ไขข้อมูลส่วนตัว</button>
+                            </div>
+
+
+                            <!-- Bootstrap Modal - To Add New Record -->
+                            <!-- Modal -->
+                            <div class="modal fade" id="edit-profile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                              <div class="modal-dialog modal-md" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel">แก้ไขข้อมูลส่วนตัว</h4>
+                            </div>
+                            <div class="modal-body">
+                              <form id="edit_form" action="lib/edit_profile?id=<?php echo $row['user_id'] ?>" method="post">
+                                  <div class="row" style="padding:10px;">
+                                    <div class="col-md-6">
+                                      <div class="form-group">
+                                          <label class="form-label">โรงเรียน</label>
+                                          <div class="form-line">
+                                              <input type="text" name="school" id="school" class="form-control" placeholder="" value="<?php echo $row['user_school_name'];?>" required /> </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <label class="form-label">รหัสโรงเรียน</label>
+                                          <div class="form-line">
+                                              <input type="text" name="school-id" id="school-id" class="form-control" placeholder="" value="<?php echo $row['user_school_id'];?>" required /> </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <label class="form-label">ชื่อผู้ใช้งาน username</label>
+                                          <div class="form-line">
+                                              <input type="text" name="username" id="username" class="form-control" placeholder="" value="<?php echo $row['user_name'];?>" required /> </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <label class="form-label">รหัสผ่าน password ใหม่</label>
+                                          <div class="form-line">
+                                              <input type="password" name="newpass" id="newpass" class="form-control" placeholder="" value="" /> </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <label class="form-label">วันที่สมัครสมาชิก</label>
+                                          <div class="form-line">
+                                            <p class="form-control-static">
+                                              <?php echo $row['user_create'];?>
+                                            </p>
+                                          </div>
+                                      </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">ชื่อ - สกุล</label>
+                                        <div class="form-line">
+                                            <input type="text" name="fullname" id="fullname" class="form-control" placeholder="" value="<?php echo $row['user_fullname'];?>" required /> </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">ตำแหน่ง</label>
+                                        <div class="form-line">
+                                            <input type="text" name="position" id="position" class="form-control" placeholder="" value="<?php echo $row['user_position'];?>" required /> </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">อีเมลล์</label>
+                                        <div class="form-line">
+                                            <input type="email" name="email" id="email" class="form-control" placeholder="" value="<?php echo $row['user_email'];?>" required /> </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">เบอร์โทรศัพท์</label>
+                                        <div class="form-line">
+                                            <input type="text" name="tel" id="tel" class="form-control" placeholder="" value="<?php echo $row['user_tel'];?>" required /> </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">ระดับผู้ใช้งาน</label>
+                                        <div class="form-line">
+                                          <p class="form-control-static">
+                                            <?php
+                                              if ($row['user_level']==300) {
+                                                echo "ผู้ดูแลระบบ (Admin)";
+                                              }
+                                              if ($row['user_level']==700) {
+                                                echo "ผู้จัดการระบบ (Super Admin)";
+                                              }
+                                            ?>
+                                          </p>
+                                        </div>
+                                    </div>
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">ยกเลิก</button>
+                              <button type="submit" onclick="return edit_user_form();" class="btn btn-primary btn-lg">บันทึก</button>
+                            </form>
+                            </div>
+                          </div>
+                          </div>
+                        </div>
+                        <!-- End Modal Add -->
+
+
+                              </div>
                           </div>
                       </div>
                   </div>
@@ -488,36 +406,7 @@ include_once '../config/db.php';
           </div>
       </section>
 
-      <!-- Jquery Core Js -->
-      <script src="../plugins/jquery/jquery.min.js"></script>
-      <!-- Bootstrap Core Js -->
-      <script src="../plugins/bootstrap/js/bootstrap.js"></script>
-      <!-- Select Plugin Js -->
-      <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
-      <!-- Slimscroll Plugin Js -->
-      <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
-      <!-- Waves Effect Plugin Js -->
-      <script src="../plugins/node-waves/waves.js"></script>
-      <!-- Jquery CountTo Plugin Js -->
-      <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
-      <!-- Morris Plugin Js -->
-      <script src="../plugins/raphael/raphael.min.js"></script>
-      <script src="../plugins/morrisjs/morris.js"></script>
-      <!-- ChartJs -->
-      <script src="../plugins/chartjs/Chart.bundle.js"></script>
-      <!-- Flot Charts Plugin Js -->
-      <script src="../plugins/flot-charts/jquery.flot.js"></script>
-      <script src="../plugins/flot-charts/jquery.flot.resize.js"></script>
-      <script src="../plugins/flot-charts/jquery.flot.pie.js"></script>
-      <script src="../plugins/flot-charts/jquery.flot.categories.js"></script>
-      <script src="../plugins/flot-charts/jquery.flot.time.js"></script>
-      <!-- Sparkline Chart Plugin Js -->
-      <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
-      <!-- Custom Js -->
-      <script src="../js/admin.js"></script>
-      <script src="../js/pages/index.js"></script>
-      <!-- Demo Js -->
-      <script src="../js/demo.js"></script>
+
 
 </body>
 </html>

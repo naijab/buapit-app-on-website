@@ -1,3 +1,8 @@
+html {
+  /*font-family:sans-serif;*/
+	font-family: 'Athiti', sans-serif !important;
+}
+
 ﻿.theme-red .navbar {
   background-color: #F44336; }
 
@@ -897,4 +902,3 @@
   background-color: #fff; }
   .theme-black .sidebar .legal .copyright a {
     color: #000 !important; }
-
